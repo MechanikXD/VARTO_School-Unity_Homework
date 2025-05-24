@@ -1,3 +1,4 @@
+using Inherited;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,20 +6,29 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
     private Vector3 _playerMoveDirection;
+    private Damageable _player;
+    [SerializeField] private string playerName;
+    [SerializeField] private int playerMaxHealth;
+    [SerializeField] private int playerDamage;
+    
     [SerializeField] private Rigidbody playerBody;
     [SerializeField] private float moveSpeed;
 
+    void Start() => _player = new Player(playerName, playerMaxHealth);
+
     void Update() {
         var newPosition = playerBody.position + _playerMoveDirection.normalized * moveSpeed;
-        newPosition.z = 0;  // Fix on z axis, so it won't change on collision
         playerBody.position = newPosition;
     }
 
     private void OnCollisionEnter(Collision other) {
         // ReSharper disable once Unity.UnknownTag idk how to tell compiler that this tag exists, soooooo...
-        if (other.gameObject.CompareTag("Enemy")) {
-            Debug.Log("PLayer collided with enemy! ewwww...");
+        if (!other.gameObject.TryGetComponent<Dragon>(out var dragon)) {
+            return;
         }
+
+        _player.TakeDamage(dragon.OnHitDamageValue);
+        dragon.TakeDamage(playerDamage);
     }
 
     public void OnMove(InputValue moveDirection) {
