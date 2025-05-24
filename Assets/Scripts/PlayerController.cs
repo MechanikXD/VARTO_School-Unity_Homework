@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Global namespace
+
 public class PlayerController : MonoBehaviour {
     private Vector3 _playerMoveDirection;
     [SerializeField] private Rigidbody playerBody;
@@ -21,6 +23,6 @@ public class PlayerController : MonoBehaviour {
 
     public void OnMove(InputValue moveDirection) {
         var moveVector = moveDirection.Get<Vector2>();
-        _playerMoveDirection = new Vector3(-moveVector.x, 0, 0);
+        _playerMoveDirection = new Vector3(-moveVector.x, 0, moveVector.y);
     }
 }
