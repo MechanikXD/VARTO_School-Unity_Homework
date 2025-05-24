@@ -4,9 +4,15 @@
     public class Person {
         public string Name { get; private set; }
         private int _currentHealthPoints;
-        private int _maxHealthPoints;
+        public readonly int MaxHealthPoints;
+
+        public Person(string name, int maxHealthPoints=100) {
+            MaxHealthPoints = maxHealthPoints;
+            _currentHealthPoints = MaxHealthPoints;
+            Name = name;
+        }
         
-        private int HeathPoints {
+        public int HeathPoints {
             get => _currentHealthPoints;
             set {
                 if (value <= 0) {
@@ -24,6 +30,9 @@
                 }
             }
         }
-        
+
+        public virtual void ShowStat() {
+            Debug.Log($"{Name} with {_currentHealthPoints}/{MaxHealthPoints}HP");
+        }
     }
 }
