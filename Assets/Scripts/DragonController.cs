@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class DragonController : MonoBehaviour {
     // Player has all tha logic, so this class here only to initialize the dragon class
-    private Damageable _dragon;
+    private Dragon _dragon;
     [SerializeField] private string dragonName;
     [SerializeField] private int dragonMaxHealth;
+    [SerializeField] private int onHitDamageValue;
 
-    void Start() => _dragon = new Dragon(dragonName, dragonMaxHealth);
+    public Dragon Dragon => _dragon;
+
+    void Start() => _dragon = new Dragon(dragonName, onHitDamageValue , dragonMaxHealth);
 }

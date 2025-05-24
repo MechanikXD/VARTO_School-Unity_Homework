@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
     private Vector3 _playerMoveDirection;
-    private Damageable _player;
+    private Player _player;
     [SerializeField] private string playerName;
     [SerializeField] private int playerMaxHealth;
     [SerializeField] private int playerDamage;
@@ -23,16 +23,16 @@ public class PlayerController : MonoBehaviour {
 
     private void OnCollisionEnter(Collision other) {
         // ReSharper disable once Unity.UnknownTag idk how to tell compiler that this tag exists, soooooo...
-        if (!other.gameObject.TryGetComponent<Dragon>(out var dragon)) {
+        if (!other.gameObject.TryGetComponent<DragonController>(out var otherDragon)) {
             return;
         }
 
-        _player.TakeDamage(dragon.OnHitDamageValue);
-        dragon.TakeDamage(playerDamage);
+        _player.TakeDamage(otherDragon.Dragon.OnHitDamageValue);
+        otherDragon.Dragon.TakeDamage(playerDamage);
     }
 
     public void OnMove(InputValue moveDirection) {
         var moveVector = moveDirection.Get<Vector2>();
-        _playerMoveDirection = new Vector3(-moveVector.x, 0, moveVector.y);
+        _playerMoveDirection = new Vector3(moveVector.x, 0, moveVector.y);
     }
 }

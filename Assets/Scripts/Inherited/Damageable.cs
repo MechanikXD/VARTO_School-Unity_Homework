@@ -15,16 +15,15 @@
         public int HeathPoints {
             get => _currentHealthPoints;
             set {
-                var resultHealthPoints = _currentHealthPoints - value;
-                if (resultHealthPoints >= _currentHealthPoints) {
+                if (value >= _currentHealthPoints) {
                     Debug.Log("Incorrect damage value!");
                 }
-                else if (resultHealthPoints <= 0) {
+                else if (value <= 0) {
                     _currentHealthPoints = 0;
                     Debug.Log("Damage exceeds current hp value, so set to 0");
                 }
                 else {
-                    _currentHealthPoints = resultHealthPoints;
+                    _currentHealthPoints = value;
                 }
             }
         }
