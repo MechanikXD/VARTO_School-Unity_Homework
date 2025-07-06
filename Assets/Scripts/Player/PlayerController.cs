@@ -16,17 +16,26 @@ namespace Player {
         [SerializeField] private float jumpSpeed;
         [SerializeField] private float jumpDuration;
         [SerializeField] private float gravity;
+        [SerializeField] private ParticleSystem landParticles;
 
         private float _currentJumpDuration;
         private bool _isJumping;
+        private bool _lastFrameWasGrounded;
 
         private void Start() {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            _lastFrameWasGrounded = true;
         }
 
         private void Update() {
             controller.Move(GetCameraRelativeVector() * Time.deltaTime);
+            
+            if (!_lastFrameWasGrounded && controller.isGrounded) {
+                landParticles.Play();
+            }
+
+            _lastFrameWasGrounded = controller.isGrounded;
         }
 
         private Vector3 GetCameraRelativeVector() {
