@@ -4,7 +4,6 @@ using Weapons.Ammunition;
 
 namespace Weapons {
     [Serializable, CreateAssetMenu(fileName = "WeaponSettings", menuName = "Scriptable Objects/WeaponSettings")]
-    // TODO: Add shoot variants e.g: forward, random in range, spread.
     public class WeaponSettings : ScriptableObject {
         [SerializeField] private float fireDelay;
         [SerializeField] private float reloadTime;

@@ -6,7 +6,6 @@ using Weapons.Ammunition;
 namespace Weapons {
     public class WeaponBase : MonoBehaviour {
         [SerializeField] private WeaponSettings setting;
-        // TODO: Better move this into settings class
         [SerializeField] private Transform shootOrigin;
         [SerializeField] private Bullet bulletPrefab;
         private int _currentAmmoCount;
