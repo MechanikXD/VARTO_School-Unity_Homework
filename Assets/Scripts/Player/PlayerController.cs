@@ -77,6 +77,6 @@ namespace Player {
             if (controller.isGrounded) _isJumping = true;
         }
 
-        public void OnAttack() => playerWeapon.ShootAction();
+        public void OnAttack(InputValue context) => playerWeapon.Shoot(context.isPressed);
     }
 }

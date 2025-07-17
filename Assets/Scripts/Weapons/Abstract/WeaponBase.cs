@@ -22,13 +22,13 @@ namespace Weapons.Abstract {
             _screenPointToRay = Camera.main!.ScreenPointToRay;
         }
 
-        public void SetContinuousShooting(bool isContinuous, Action shootAction) {
+        private void SetContinuousShooting(bool isContinuous) {
             if (isContinuous && !_isShooting) {
                 _isShooting = true;
 
                 IEnumerator ShootContinuously() {
                     while (_isShooting) {
-                        shootAction();
+                        ShootAction();
                         yield return new WaitForSeconds(setting.FireDelay);
                     }
                 }
@@ -39,10 +39,19 @@ namespace Weapons.Abstract {
                 _isShooting = false;
             }
         }
-        
-        public abstract void ShootAction();
 
-        protected void Shoot(Ray direction) {
+        protected abstract void ShootAction();
+
+        public void Shoot(bool isShooting) {
+            if (setting.IsAutomatic) {
+                SetContinuousShooting(isShooting);
+            }
+            else {
+                ShootAction();
+            }
+        }
+
+        protected void ShootInDirection(Ray direction) {
             if (InFireDelay || CurrentAmmoCount <= 0) return;
 
             if (Physics.Raycast(direction, out var hit, setting.MaxDistance)) {
@@ -62,7 +71,7 @@ namespace Weapons.Abstract {
         protected void ShootForward() {
             var forwardRay = _screenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
 
-            Shoot(forwardRay);
+            ShootInDirection(forwardRay);
         }
 
         protected void ShootForwardWithDeviation(float angleDeviation) {
@@ -72,7 +81,7 @@ namespace Weapons.Abstract {
             var ray = _screenPointToRay(new Vector2(
                     Random.Range(widthDeviation, Screen.width - widthDeviation),
                     Random.Range(heightDeviation, Screen.height - heightDeviation)));
-            Shoot(ray);
+            ShootInDirection(ray);
         }
 
         protected void ShootQueue(Action shootAction, int bulletCount) {

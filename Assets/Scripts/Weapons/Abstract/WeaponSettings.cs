@@ -7,6 +7,7 @@ namespace Weapons.Abstract {
     public class WeaponSettings : ScriptableObject {
         [SerializeField] private float fireDelay;
         [SerializeField] private float reloadTime;
+        [SerializeField] private bool isAutomatic;
         [Space]
         [SerializeField] private float damage;
         [SerializeField] private DamageFallOffType damageFallOff;
@@ -15,7 +16,7 @@ namespace Weapons.Abstract {
         [SerializeField] private int maxAmmo;
         [SerializeField] private float bulletSpeed;
 
-
+        public bool IsAutomatic => isAutomatic;
         public float FireDelay => fireDelay;
         public int MaxAmmo => maxAmmo;
         public float MaxDistance => maxDistance;

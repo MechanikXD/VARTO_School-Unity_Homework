@@ -1,7 +1,7 @@
 using Weapons.Abstract;
 
 namespace Weapons.Definitions {
-    public class Riffle : WeaponBase {
+    public class Pistol : WeaponBase {
         protected override void ShootAction() => ShootForwardWithDeviation(10f);
     }
 }
