@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Weapons;
+using Weapons.Abstract;
 
 namespace Player {
     public class PlayerController : MonoBehaviour {
@@ -77,6 +77,6 @@ namespace Player {
             if (controller.isGrounded) _isJumping = true;
         }
 
-        public void OnAttack() => playerWeapon.Shoot();
+        public void OnAttack() => playerWeapon.ShootAction();
     }
 }

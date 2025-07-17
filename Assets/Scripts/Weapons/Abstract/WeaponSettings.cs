@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Weapons.Ammunition;
 
-namespace Weapons {
+namespace Weapons.Abstract {
     [Serializable, CreateAssetMenu(fileName = "WeaponSettings", menuName = "Scriptable Objects/WeaponSettings")]
     public class WeaponSettings : ScriptableObject {
         [SerializeField] private float fireDelay;

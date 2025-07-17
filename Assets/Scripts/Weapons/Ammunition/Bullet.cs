@@ -1,4 +1,5 @@
 using UnityEngine;
+using Weapons.Abstract;
 
 namespace Weapons.Ammunition {
     [RequireComponent(typeof(Rigidbody))]
@@ -13,6 +14,9 @@ namespace Weapons.Ammunition {
         private void Awake() => Destroy(gameObject, destroyDelay);
 
         private void OnCollisionEnter(Collision other) {
+            if (other.gameObject.GetComponent<Bullet>() ||
+                other.gameObject.GetComponent<WeaponBase>()) return;
+            
             var collisionPoint = other.GetContact(0);
             var decalRotation = Quaternion.LookRotation(collisionPoint.normal);
             var decal = Instantiate(decalPrefab, collisionPoint.point, decalRotation);
