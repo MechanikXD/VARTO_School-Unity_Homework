@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Weapons.Abstract;
+using Weapons;
 
 namespace Player {
     public class PlayerController : MonoBehaviour {
         [SerializeField] private CharacterController controller;
         [SerializeField] private Transform attachedCamera;
-        [SerializeField] private WeaponBase playerWeapon;
+        [SerializeField] private WeaponController weaponController;
         
         [SerializeField] private float mouseSensitivity;
         private float _cameraRotation; // Camera rotation along X axis only
@@ -28,6 +28,7 @@ namespace Player {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             _lastFrameWasGrounded = true;
+            weaponController.InitializeSelf();
         }
 
         private void Update() {
@@ -77,6 +78,16 @@ namespace Player {
             if (controller.isGrounded) _isJumping = true;
         }
 
-        public void OnAttack(InputValue context) => playerWeapon.Shoot(context.isPressed);
+        public void OnScroll(InputValue axis) {
+            var axisValue = axis.Get<float>();
+            if (axisValue > 0) {
+                weaponController.ChangeNextWeapon();
+            }
+            else if (axisValue < 0) {
+                weaponController.ChangePreviousWeapon();
+            }
+        }
+
+        public void OnAttack(InputValue context) => weaponController.Shoot(context.isPressed);
     }
 }
