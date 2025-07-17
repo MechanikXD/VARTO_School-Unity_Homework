@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Weapons;
 
 namespace Player {
     public class PlayerController : MonoBehaviour {
         [SerializeField] private CharacterController controller;
         [SerializeField] private Transform attachedCamera;
+        [SerializeField] private WeaponBase playerWeapon;
         
         [SerializeField] private float mouseSensitivity;
         private float _cameraRotation; // Camera rotation along X axis only
@@ -74,5 +76,7 @@ namespace Player {
         public void OnJump() {
             if (controller.isGrounded) _isJumping = true;
         }
+
+        public void OnAttack() => playerWeapon.Shoot();
     }
 }
