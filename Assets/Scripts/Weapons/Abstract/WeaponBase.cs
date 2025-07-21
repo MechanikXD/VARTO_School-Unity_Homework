@@ -58,8 +58,10 @@ namespace Weapons.Abstract {
             if (InFireDelay || CurrentAmmoCount <= 0) return;
 
             if (Physics.Raycast(direction, out var hit, setting.MaxDistance)) {
-                if (hit.transform.gameObject.TryGetComponent<IDamageable>(out var damageable))
+                if (hit.transform.gameObject.TryGetComponent<IDamageable>(out var damageable)) {
+                    Debug.Log($"Damageable was shot");
                     damageable.Damage(setting.GetWeaponDamage(hit.distance));
+                }
             }
             
             var bulletDirection = direction.direction.normalized;
