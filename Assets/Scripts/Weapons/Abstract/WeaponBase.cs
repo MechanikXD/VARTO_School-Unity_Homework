@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using Enemy.Damageable;
+using Player;
 using UnityEngine;
 using Weapons.Ammunition;
 using Random = UnityEngine.Random;
 
 namespace Weapons.Abstract {
     public abstract class WeaponBase : MonoBehaviour {
+        [SerializeField] protected Rigidbody weaponBody;
+        [SerializeField] protected BoxCollider weaponCollider;
         [SerializeField] protected WeaponSettings setting;
         [SerializeField] protected Transform shootOrigin;
         [SerializeField] protected Bullet bulletPrefab;
@@ -131,9 +134,35 @@ namespace Weapons.Abstract {
             StartCoroutine(RemoveFireDelayLater(setting.ReloadTime));
         }
 
+        public void DetachFromParent() {
+            weaponCollider.enabled = true;
+            weaponBody.isKinematic = false;
+            weaponBody.useGravity = true;
+            transform.parent = null;
+        }
+
+        public void AttachTo(Transform parent) {
+            weaponCollider.enabled = false;
+            weaponBody.isKinematic = true;
+            weaponBody.useGravity = false;
+
+            var thisWeaponTransform = transform;
+            thisWeaponTransform.rotation = Quaternion.identity;
+            thisWeaponTransform.position = Vector3.zero;
+            
+            transform.SetParent(parent, false);
+        }
+
+        public void Throw(Vector3 force) => weaponBody.AddForce(force, ForceMode.Impulse);
+        public void ThrowForward(float force) => Throw(Vector3.forward * force);
+
         protected IEnumerator RemoveFireDelayLater(float time) {
             yield return new WaitForSeconds(time);
             InFireDelay = false;
+        }
+        
+        public void OnCollisionEnter(Collision other) {
+            if (other.gameObject.TryGetComponent<PlayerController>(out var player)) player.TryAddWeapon(this);
         }
     }
 }
