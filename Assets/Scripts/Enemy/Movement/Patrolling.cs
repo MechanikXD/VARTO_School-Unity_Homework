@@ -95,5 +95,11 @@ namespace Enemy.Movement {
         private bool ReachedDestination() {
             return Vector3.Distance(_agent.destination, transform.position) < _offsetToDestination;
         }
+
+        public void DoSomething() {
+            // idk what to do there, I don't have any more animations and making new is painful.
+            // Since all animations are loops, this will be called repeatedly, oh well...
+            Debug.Log($"{gameObject.name} has called this useless function!");
+        }
     }
 }
