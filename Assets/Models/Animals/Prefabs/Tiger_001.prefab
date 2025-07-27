@@ -1013,20 +1013,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742c488b0bda99d4e89a3edfd3745c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 754494733493859838}
-  points:
+  _agent: {fileID: 754494733493859838}
+  _points:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  idleTime: {x: 2, y: 5}
-  patrolType: 0
-  offsetToDestination: 1
-  animator: {fileID: 5883155896844355907}
-  animationCrossFade: 0.2
-  idleAnimation: {fileID: 7400000, guid: ba2ada3a8c3d8c24aa892e241da34421, type: 2}
-  walkAnimation: {fileID: 7400000, guid: 6922d6a93060d7547a659edc79fedf1b, type: 2}
+  _idleTime: {x: 2, y: 7}
+  _moveSpeed: {x: 2, y: 3.5}
+  _patrolType: 0
+  _offsetToDestination: 1
+  _animator: {fileID: 5883155896844355907}
+  _animatorSpeedPeramName: Speed
 --- !u!114 &7484220413003503867
 MonoBehaviour:
   m_ObjectHideFlags: 0

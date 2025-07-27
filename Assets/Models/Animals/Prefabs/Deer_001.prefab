@@ -1044,7 +1044,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7402009758359158996}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.037}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1109,15 +1109,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742c488b0bda99d4e89a3edfd3745c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 1883501134485424920}
-  points: []
-  idleTime: {x: 5, y: 7}
-  patrolType: 0
-  offsetToDestination: 1
-  animator: {fileID: 7922649801668778610}
-  animationCrossFade: 0.2
-  idleAnimation: {fileID: 7400000, guid: 55e8aa8b18a34934ebbfd3d646d795fc, type: 2}
-  walkAnimation: {fileID: 7400000, guid: 3264f521eed7f824f8d725deb24b4418, type: 2}
+  _agent: {fileID: 1883501134485424920}
+  _points:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _idleTime: {x: 3, y: 5}
+  _moveSpeed: {x: 1.5, y: 4}
+  _patrolType: 0
+  _offsetToDestination: 1
+  _animator: {fileID: 7922649801668778610}
+  _animatorSpeedPeramName: Speed
 --- !u!114 &7310409843550845380
 MonoBehaviour:
   m_ObjectHideFlags: 0

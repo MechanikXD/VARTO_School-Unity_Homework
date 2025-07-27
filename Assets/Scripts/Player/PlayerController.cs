@@ -10,6 +10,7 @@ namespace Player {
         [SerializeField] private CharacterController controller;
         [SerializeField] private Transform attachedCamera;
         [SerializeField] private WeaponController weaponController;
+        [SerializeField] private PlayerInput _inputAction;
         private List<WeaponBase> _recentlyDroppedWeapons;
         [SerializeField] private float pickupResetDuration = 1.5f;
         
@@ -19,6 +20,7 @@ namespace Player {
 
         private Vector2 _moveDirection;
         [SerializeField] private float moveSpeed;
+        [SerializeField] private float _runSpeed;
         
         [SerializeField] private float jumpSpeed;
         [SerializeField] private float jumpDuration;
@@ -28,6 +30,7 @@ namespace Player {
         private float _currentJumpDuration;
         private bool _isJumping;
         private bool _lastFrameWasGrounded;
+        private InputAction _sprintKey;
 
         private void Start() {
             Cursor.visible = false;
@@ -35,6 +38,7 @@ namespace Player {
             _lastFrameWasGrounded = true;
             _recentlyDroppedWeapons = new List<WeaponBase>();
             weaponController.InitializeSelf();
+            _sprintKey = _inputAction.actions.FindAction("Sprint");
         }
 
         private void Update() {
@@ -49,7 +53,8 @@ namespace Player {
 
         private Vector3 GetCameraRelativeVector() {
             Vector3 playerRelativeVector = (_moveDirection.y * attachedCamera.forward +
-                                            _moveDirection.x * attachedCamera.right) * moveSpeed;
+                                            _moveDirection.x * attachedCamera.right) * 
+                                           (_sprintKey.IsPressed() ? _runSpeed : moveSpeed);
             if (_isJumping) {
                 playerRelativeVector.y = jumpSpeed;
                 _currentJumpDuration += Time.deltaTime;
