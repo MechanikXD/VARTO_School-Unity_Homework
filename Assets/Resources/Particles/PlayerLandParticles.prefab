@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3437505750841234944}
   - component: {fileID: 832516633320333141}
   - component: {fileID: 1899299261739847360}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlayerLandParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

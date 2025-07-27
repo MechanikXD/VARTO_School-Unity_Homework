@@ -1,12 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons;
+using Weapons.Abstract;
 
 namespace Player {
     public class PlayerController : MonoBehaviour {
         [SerializeField] private CharacterController controller;
         [SerializeField] private Transform attachedCamera;
-        [SerializeField] private WeaponBase playerWeapon;
+        [SerializeField] private WeaponController weaponController;
+        private List<WeaponBase> _recentlyDroppedWeapons;
+        [SerializeField] private float pickupResetDuration = 1.5f;
         
         [SerializeField] private float mouseSensitivity;
         private float _cameraRotation; // Camera rotation along X axis only
@@ -28,6 +33,8 @@ namespace Player {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             _lastFrameWasGrounded = true;
+            _recentlyDroppedWeapons = new List<WeaponBase>();
+            weaponController.InitializeSelf();
         }
 
         private void Update() {
@@ -77,6 +84,38 @@ namespace Player {
             if (controller.isGrounded) _isJumping = true;
         }
 
-        public void OnAttack() => playerWeapon.Shoot();
+        public void OnScroll(InputValue axis) {
+            var axisValue = axis.Get<float>();
+            if (axisValue > 0) {
+                weaponController.ChangeNextWeapon();
+            }
+            else if (axisValue < 0) {
+                weaponController.ChangePreviousWeapon();
+            }
+        }
+
+        public void OnAttack(InputValue context) => weaponController.Shoot(context.isPressed);
+
+        public void OnThrow() {
+            var currentWeapon = weaponController.CurrentWeapon;
+            weaponController.DropCurrentWeapon();
+            
+            if (currentWeapon == null) return;
+            // Block from picking up this weapon for some time
+            _recentlyDroppedWeapons.Add(currentWeapon);
+            IEnumerator RemoveThisWeaponFromRecentlyDropped() {
+                yield return new WaitForSeconds(pickupResetDuration);
+                _recentlyDroppedWeapons.Remove(currentWeapon);
+            }
+
+            StartCoroutine(RemoveThisWeaponFromRecentlyDropped());
+        }
+
+        public bool TryAddWeapon(WeaponBase newWeapon) {
+            if (_recentlyDroppedWeapons.Contains(newWeapon) || weaponController.ContainsWeapon(newWeapon)) return false;
+
+            weaponController.AddWeapon(newWeapon);
+            return true;
+        }
     }
 }

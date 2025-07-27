@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 080311e610494358afd5694f6a0d4432, type: 3}
-  m_Name: RiffleSettings
+  m_Name: PistolSettings
   m_EditorClassIdentifier: 
-  fireDelay: 0.2
-  reloadTime: 2
-  isAutomatic: 1
+  fireDelay: 0.5
+  reloadTime: 1
+  isAutomatic: 0
   damage: 5
-  damageFallOff: 2
+  damageFallOff: 1
   maxDistance: 20
-  maxAmmo: 30
+  maxAmmo: 15
   bulletSpeed: 50

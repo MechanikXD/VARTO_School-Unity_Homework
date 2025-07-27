@@ -2,11 +2,12 @@ using System;
 using UnityEngine;
 using Weapons.Ammunition;
 
-namespace Weapons {
+namespace Weapons.Abstract {
     [Serializable, CreateAssetMenu(fileName = "WeaponSettings", menuName = "Scriptable Objects/WeaponSettings")]
     public class WeaponSettings : ScriptableObject {
         [SerializeField] private float fireDelay;
         [SerializeField] private float reloadTime;
+        [SerializeField] private bool isAutomatic;
         [Space]
         [SerializeField] private float damage;
         [SerializeField] private DamageFallOffType damageFallOff;
@@ -15,7 +16,7 @@ namespace Weapons {
         [SerializeField] private int maxAmmo;
         [SerializeField] private float bulletSpeed;
 
-
+        public bool IsAutomatic => isAutomatic;
         public float FireDelay => fireDelay;
         public int MaxAmmo => maxAmmo;
         public float MaxDistance => maxDistance;
