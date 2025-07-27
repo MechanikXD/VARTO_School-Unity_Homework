@@ -20,6 +20,7 @@ namespace Weapons.Ammunition {
             var collisionPoint = other.GetContact(0);
             var decalRotation = Quaternion.LookRotation(collisionPoint.normal);
             var decal = Instantiate(decalPrefab, collisionPoint.point, decalRotation);
+            decal.SetParent(other.transform, true);
             Destroy(decal.gameObject, decalDestroyDelay);
             
             if (destroyOnCollision) Destroy(gameObject);
