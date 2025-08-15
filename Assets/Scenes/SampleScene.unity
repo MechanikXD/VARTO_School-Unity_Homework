@@ -740,6 +740,11 @@ MonoBehaviour:
   jumpDuration: 0.3
   gravity: 9.8
   landParticles: {fileID: 255644986}
+  _ambient: {fileID: 8300000, guid: de6299cd304a1584bbf3df42fed8a752, type: 3}
+  _walkSoundDelay: 0.5
+  _runSoundDelay: 0.25
+  _walkSound: {fileID: 8300000, guid: 203ac8b6f07070e4f93f1c1a6fff06c3, type: 3}
+  _runSound: {fileID: 8300000, guid: 1deb201b8bf8f89479323a74e421150b, type: 3}
 --- !u!114 &315254554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18053,7 +18058,7 @@ MonoBehaviour:
   _masterAudioMixer: {fileID: 24100000, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _defaultGroup: {fileID: 24500006, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _pausedGroup: {fileID: -1555527050988983282, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
-  _transitionTime: 1
+  _transitionTime: 0.5
   _sfxSource: {fileID: 11400000, guid: 214ff7e0e3447d448bee43488d9e6232, type: 2}
   _musicSource: {fileID: 11400000, guid: d910fd74a53c8974cb11d710e2f2ea4c, type: 2}
 --- !u!4 &1645692136

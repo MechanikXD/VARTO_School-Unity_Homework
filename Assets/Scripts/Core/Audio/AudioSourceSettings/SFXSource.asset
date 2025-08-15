@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SFXSource
   m_EditorClassIdentifier: 
   _name: SFX
-  _group: {fileID: 0}
+  _group: {fileID: -6773727488721766297, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _loop: 0
   _is3D: 1
   _minHearDistance: 5

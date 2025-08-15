@@ -20,3 +20,4 @@ MonoBehaviour:
   maxDistance: 20
   maxAmmo: 30
   bulletSpeed: 50
+  _shootSound: {fileID: 8300000, guid: 489386b2c4f88bd459d22fc59e9bf7e4, type: 3}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MusicSource
   m_EditorClassIdentifier: 
   _name: Music
-  _group: {fileID: 0}
+  _group: {fileID: 3554882995021026743, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _loop: 1
   _is3D: 0
   _minHearDistance: 0
