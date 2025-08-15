@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Player {
         private bool _isJumping;
         private bool _lastFrameWasGrounded;
         private InputAction _sprintKey;
+
+        public static event Action PausePressed;
 
         private void Start() {
             Cursor.visible = false;
@@ -114,6 +117,10 @@ namespace Player {
             }
 
             StartCoroutine(RemoveThisWeaponFromRecentlyDropped());
+        }
+
+        public void OnPause() {
+            PausePressed?.Invoke();
         }
 
         public bool TryAddWeapon(WeaponBase newWeapon) {
