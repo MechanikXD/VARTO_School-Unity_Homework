@@ -1,3 +1,4 @@
+using Core.Audio;
 using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,6 +36,7 @@ namespace UI.View {
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            AudioController.Instance.ChangeToPausedGroup();
         }
         
         public void DisableCanvas() {
@@ -42,6 +44,7 @@ namespace UI.View {
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            AudioController.Instance.ChangeToDefaultGroup();
         }
 
         private void SwitchCanvasEnabled() {
