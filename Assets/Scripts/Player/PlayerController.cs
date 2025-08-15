@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons;
@@ -28,6 +29,16 @@ namespace Player {
         [SerializeField] private float gravity;
         [SerializeField] private ParticleSystem landParticles;
 
+        [Header("Music")]
+        private InputAction _moveKey;
+        [SerializeField] private AudioClip _ambient;
+        [SerializeField] private float _walkSoundDelay;
+        [SerializeField] private float _runSoundDelay;
+        private bool _moveSoundIsDelayed;
+        [SerializeField] private AudioClip _walkSound;
+        [SerializeField] private AudioClip _runSound;
+        private Coroutine _moveCoroutine;
+
         private float _currentJumpDuration;
         private bool _isJumping;
         private bool _lastFrameWasGrounded;
@@ -41,7 +52,14 @@ namespace Player {
             _lastFrameWasGrounded = true;
             _recentlyDroppedWeapons = new List<WeaponBase>();
             weaponController.InitializeSelf();
+            _moveKey = _inputAction.actions["Move"];
             _sprintKey = _inputAction.actions.FindAction("Sprint");
+            AudioController.Instance.PlayMusic("Ambient", _ambient);
+            _moveCoroutine = StartCoroutine(PlayWalkSound());
+        }
+
+        private void OnDestroy() {
+            StopCoroutine(_moveCoroutine);
         }
 
         private void Update() {
@@ -71,6 +89,26 @@ namespace Player {
                 playerRelativeVector.y = -gravity;
             }
             return playerRelativeVector;
+        }
+
+        private IEnumerator PlayWalkSound() {
+            while (true) {
+                if (_moveKey.IsPressed() && !_moveSoundIsDelayed) {
+                    _moveSoundIsDelayed = true;
+                    if (_sprintKey.IsPressed()) {
+                        AudioController.Instance.PlaySfx(transform.position, _runSound);
+                        yield return new WaitForSeconds(_runSoundDelay + _runSound.length);
+                    }
+                    else {
+                        AudioController.Instance.PlaySfx(transform.position, _walkSound);
+                        yield return new WaitForSeconds(_walkSoundDelay + _walkSound.length);
+                    }
+                    _moveSoundIsDelayed = false;
+                }
+                else {
+                    yield return new WaitUntil(_moveKey.IsPressed);
+                }
+            }
         }
         
         public void OnMove(InputValue currentMoveDirection) =>

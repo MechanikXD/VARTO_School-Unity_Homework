@@ -53,7 +53,7 @@ namespace Core.Audio {
 
                 var musicSource = _playingMusic[key];
                 _playingMusic.Remove(key);
-                Destroy(musicSource);
+                Destroy(musicSource.gameObject);
             }
         }
 
@@ -65,28 +65,29 @@ namespace Core.Audio {
             sfxTransform.position = position;
             
             sfxSource.Play();
+            Destroy(sfxSource.gameObject, clip.length);
         }
 
         public void PlaySfx(Transform target, AudioClip clip) {
             var sfxSource = _sfxSource.CreateAudioSource(clip);
             sfxSource.transform.SetParent(target);
             sfxSource.Play();
+            Destroy(sfxSource.gameObject, clip.length);
         }
 
-        public void PlaySfx(Vector3 position, AudioClip clip, AudioSourceSettings audioSettings) {
-            var sfxSource = audioSettings.CreateAudioSource(clip);
-            
-            var sfxTransform = sfxSource.transform;
+        public void PlaySfx(Vector3 position, AudioClip clip, AudioSource audioSource) {
+            var sfxTransform = audioSource.transform;
             sfxTransform.SetParent(transform);
             sfxTransform.position = position;
             
-            sfxSource.Play();
+            audioSource.Play();
+            Destroy(audioSource.gameObject, clip.length);
         }
 
-        public void PlaySfx(Transform target, AudioClip clip, AudioSourceSettings audioSettings) {
-            var sfxSource = audioSettings.CreateAudioSource(clip);
-            sfxSource.transform.SetParent(target);
-            sfxSource.Play();
+        public void PlaySfx(Transform target, AudioClip clip, AudioSource audioSource) {
+            audioSource.transform.SetParent(target);
+            audioSource.Play();
+            Destroy(audioSource.gameObject, clip.length);
         }
 
         public void SetMasterVolume(float value) {
@@ -95,10 +96,12 @@ namespace Core.Audio {
         }
 
         public void ChangeToDefaultGroup() {
+            _masterAudioMixer.updateMode = AudioMixerUpdateMode.Normal;
             _defaultGroup.TransitionTo(_transitionTime);
         }
         
         public void ChangeToPausedGroup() {
+            _masterAudioMixer.updateMode = AudioMixerUpdateMode.UnscaledTime;
             _pausedGroup.TransitionTo(_transitionTime);
         }
     }

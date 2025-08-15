@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Core.Audio;
 using Enemy.Damageable;
 using Player;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace Weapons.Abstract {
 
                 IEnumerator ShootContinuously() {
                     while (_isShooting) {
+                        if (!InFireDelay) AudioController.Instance.PlaySfx(shootOrigin.position, setting.ShootSound);
                         ShootAction();
                         yield return new WaitForSeconds(setting.FireDelay);
                     }
@@ -50,6 +52,7 @@ namespace Weapons.Abstract {
                 SetContinuousShooting(isShooting);
             }
             else {
+                if (!InFireDelay) AudioController.Instance.PlaySfx(shootOrigin.position, setting.ShootSound);
                 ShootAction();
             }
         }

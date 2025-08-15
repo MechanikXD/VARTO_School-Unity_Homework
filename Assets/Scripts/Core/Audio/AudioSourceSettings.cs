@@ -20,13 +20,13 @@ namespace Core.Audio {
         public bool Is3D => _is3D;
 
         public AudioSource CreateAudioSource() {
-            var audioSource = new AudioSource {
-                name = _name,
-                outputAudioMixerGroup = _group,
-                playOnAwake = false,
-                loop = _loop,
-                spatialBlend = _is3D ? 1 : 0
-            };
+            var audioSource = new GameObject().AddComponent<AudioSource>();
+            
+            audioSource.name = _name;
+            audioSource.outputAudioMixerGroup = _group;
+            audioSource.playOnAwake = false;
+            audioSource.loop = _loop;
+            audioSource.spatialBlend = _is3D ? 1 : 0;
 
             if (_is3D) {
                 audioSource.minDistance = _minHearDistance;
