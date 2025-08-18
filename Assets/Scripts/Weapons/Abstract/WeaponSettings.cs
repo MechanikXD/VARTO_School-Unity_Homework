@@ -16,12 +16,16 @@ namespace Weapons.Abstract {
         [SerializeField] private int maxAmmo;
         [SerializeField] private float bulletSpeed;
 
+        [Space]
+        [SerializeField] private AudioClip _shootSound;
+
         public bool IsAutomatic => isAutomatic;
         public float FireDelay => fireDelay;
         public int MaxAmmo => maxAmmo;
         public float MaxDistance => maxDistance;
         public float BulletSpeed => bulletSpeed;
         public float ReloadTime => reloadTime;
+        public AudioClip ShootSound => _shootSound;
 
         public float GetWeaponDamage(float distance) {
             var clampDistance = Mathf.Clamp(distance, 0, maxDistance - 1);
