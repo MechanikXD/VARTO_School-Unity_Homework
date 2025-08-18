@@ -77,6 +77,7 @@ namespace Core.Audio {
 
         public void PlaySfx(Vector3 position, AudioClip clip, AudioSource audioSource) {
             var sfxTransform = audioSource.transform;
+            audioSource.clip = clip;
             sfxTransform.SetParent(transform);
             sfxTransform.position = position;
             
@@ -86,6 +87,7 @@ namespace Core.Audio {
 
         public void PlaySfx(Transform target, AudioClip clip, AudioSource audioSource) {
             audioSource.transform.SetParent(target);
+            audioSource.clip = clip;
             audioSource.Play();
             Destroy(audioSource.gameObject, clip.length);
         }
