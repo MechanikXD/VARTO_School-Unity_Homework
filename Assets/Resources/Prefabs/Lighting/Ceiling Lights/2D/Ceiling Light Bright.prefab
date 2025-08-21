@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1362500917715853451, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1362500917715853451, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 1493833483808846546, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
       propertyPath: m_Intensity
       value: 95.492966
@@ -99,6 +107,14 @@ PrefabInstance:
     - target: {fileID: 4789936396316217191, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4789936396316217191, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5210574598823997957, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6585471290104418354, guid: ebb3c85b58baeef44825d9dcc11dc781, type: 3}
       propertyPath: displayLightIntensity
