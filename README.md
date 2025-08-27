@@ -2,10 +2,10 @@ Repository dedicated to homeworks for VARTO School “Game Developer” courses.
 
 What I have learned while doing those homeworks:
   1) Unity Input System
-  2) Wokring with light, backing light, light and reflection probes
+  2) Working with light, backing light, reflection, and light probes
   3) Particle System
   4) Animation and Audio systems
-  5) NavMesh Surface, Agents and Modificators (such as obstacle, volume)
+  5) NavMesh Surface, Agents, and Modifications (such as obstacle, volume)
   6) Post processing, global and local volumes. Graphics draw calls inspection.
 
 Key point to remember:
