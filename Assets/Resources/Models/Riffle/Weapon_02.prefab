@@ -95,9 +95,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6559362985659250037}
-  - component: {fileID: 795227880392808845}
   - component: {fileID: 7485815446909190496}
   - component: {fileID: 202192180945434020}
+  - component: {fileID: 1470660779005175901}
   m_Layer: 0
   m_Name: Weapon_02
   m_TagString: Untagged
@@ -128,23 +128,6 @@ Transform:
   - {fileID: 2574632704884655139}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &795227880392808845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5786097810451525583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3588254197f7496ca91bfd5a3e836dae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponBody: {fileID: 7485815446909190496}
-  weaponCollider: {fileID: 202192180945434020}
-  setting: {fileID: 11400000, guid: 8b6b2258958c6804fb38ddefaaaca9b4, type: 2}
-  shootOrigin: {fileID: 2574632704884655139}
-  bulletPrefab: {fileID: 3781241451178191933, guid: 44cdcd55c8562cc46b31e272eb09fc5b, type: 3}
 --- !u!54 &7485815446909190496
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -193,6 +176,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 0.55, z: 0.15}
   m_Center: {x: -0.35, y: 0.05, z: 0}
+--- !u!114 &1470660779005175901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5786097810451525583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4925cdba3d034e0fa5d264340ef7ba7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponBody: {fileID: 7485815446909190496}
+  _weaponCollider: {fileID: 202192180945434020}
+  _settings: {fileID: 11400000, guid: 8b6b2258958c6804fb38ddefaaaca9b4, type: 2}
+  _shootOrigin: {fileID: 2574632704884655139}
+  _bulletPrefab: {fileID: 3781241451178191933, guid: 44cdcd55c8562cc46b31e272eb09fc5b, type: 3}
 --- !u!1 &5836183803064680627
 GameObject:
   m_ObjectHideFlags: 0

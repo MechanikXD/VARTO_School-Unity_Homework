@@ -14,6 +14,9 @@ namespace UI.View {
         
         private void Awake() {
             _thisCanvas = GetComponent<Canvas>();
+        }
+
+        private void Start() {
             DisableCanvas();
         }
 
