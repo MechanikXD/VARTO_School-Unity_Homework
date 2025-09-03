@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 080311e610494358afd5694f6a0d4432, type: 3}
-  m_Name: PistolSettings
+  m_Name: ShotgunSettings
   m_EditorClassIdentifier: 
-  _shootType: 1
-  _fireDelay: 0.3
-  _reloadTime: 2
+  _shootType: 0
+  _fireDelay: 0
+  _reloadTime: 0
   _isAutomatic: 0
-  _damage: 5
-  _damageFallOff: 1
-  _maxDistance: 50
-  _maxAmmo: 8
-  _bulletSpeed: 30
-  _shootSound: {fileID: 8300000, guid: 2a10d09b2c68cf748958e4987904907f, type: 3}
-  _deviationAngle: 5
+  _damage: 0
+  _damageFallOff: 0
+  _maxDistance: 0
+  _maxAmmo: 0
+  _bulletSpeed: 0
+  _shootSound: {fileID: 0}
+  _deviationAngle: 0
   _queueLength: 0
   _burstPallets: 0

@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080311e610494358afd5694f6a0d4432, type: 3}
   m_Name: RiffleSettings
   m_EditorClassIdentifier: 
-  fireDelay: 0.2
-  reloadTime: 2
-  isAutomatic: 1
-  damage: 5
-  damageFallOff: 2
-  maxDistance: 20
-  maxAmmo: 30
-  bulletSpeed: 50
+  _shootType: 3
+  _fireDelay: 0.1
+  _reloadTime: 3
+  _isAutomatic: 0
+  _damage: 4
+  _damageFallOff: 1
+  _maxDistance: 35
+  _maxAmmo: 30
+  _bulletSpeed: 30
   _shootSound: {fileID: 8300000, guid: 489386b2c4f88bd459d22fc59e9bf7e4, type: 3}
+  _deviationAngle: 5
+  _queueLength: 3
+  _burstPallets: 0
