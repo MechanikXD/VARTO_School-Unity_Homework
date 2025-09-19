@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Core.Audio;
 using Enemy.Damageable;
 using Player;
@@ -8,22 +9,40 @@ using Weapons.Ammunition;
 using Random = UnityEngine.Random;
 
 namespace Weapons.Abstract {
-    public abstract class WeaponBase : MonoBehaviour {
-        [SerializeField] protected Rigidbody weaponBody;
-        [SerializeField] protected BoxCollider weaponCollider;
-        [SerializeField] protected WeaponSettings setting;
-        [SerializeField] protected Transform shootOrigin;
-        [SerializeField] protected Bullet bulletPrefab;
-        protected bool InFireDelay;
-        protected int CurrentAmmoCount;
+    public class WeaponBase : MonoBehaviour {
+        [SerializeField] protected Rigidbody _weaponBody;
+        [SerializeField] protected BoxCollider _weaponCollider;
+        [SerializeField] protected WeaponSettings _settings;
+        [SerializeField] protected Transform _shootOrigin;
+        [SerializeField] protected Bullet _bulletPrefab;
+        private bool _inFireDelay;
+        private int _currentAmmoCount;
 
+        private Dictionary<ShootType, Action> _shootActions;
         private Func<Vector3, Ray> _screenPointToRay;
 
         private bool _isShooting;
         
         private void Awake() {
-            CurrentAmmoCount = setting.MaxAmmo;
+            Initialize();
+        }
+
+        private void Initialize() {
+            _currentAmmoCount = _settings.MaxAmmo;
             _screenPointToRay = Camera.main!.ScreenPointToRay;
+
+            _shootActions = new Dictionary<ShootType, Action>() {
+                [ShootType.Straight] = ShootForward,
+                [ShootType.WithDeviation] = ShootForwardWithDeviation,
+                [ShootType.StraightQueue] = () => ShootQueue(ShootForward),
+                [ShootType.QueueWithDeviation] = () => ShootQueue(ShootForwardWithDeviation),
+                [ShootType.Burst] = ShootBurst,
+                [ShootType.Custom] = () => {}
+            };
+        }
+
+        public void SetCustomShootBehaviour(Action behaviour) {
+            _shootActions[ShootType.Custom] = behaviour;
         }
 
         private void SetContinuousShooting(bool isContinuous) {
@@ -32,9 +51,9 @@ namespace Weapons.Abstract {
 
                 IEnumerator ShootContinuously() {
                     while (_isShooting) {
-                        if (!InFireDelay) AudioController.Instance.PlaySfx(shootOrigin.position, setting.ShootSound);
-                        ShootAction();
-                        yield return new WaitForSeconds(setting.FireDelay);
+                        if (!_inFireDelay) AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                        _shootActions[_settings.Type]();
+                        yield return new WaitForSeconds(_settings.FireDelay);
                     }
                 }
 
@@ -45,111 +64,114 @@ namespace Weapons.Abstract {
             }
         }
 
-        protected abstract void ShootAction();
+        private Ray GetShootRay(float angleDeviation) {
+            var widthDeviation = Screen.width / 2f * (1f - angleDeviation / 90f);
+            var heightDeviation = Screen.height / 2f * (1f - angleDeviation / 90f);
+
+            return _screenPointToRay(new Vector2(
+                Random.Range(widthDeviation, Screen.width - widthDeviation),
+                Random.Range(heightDeviation, Screen.height - heightDeviation)));
+        }
 
         public void Shoot(bool isShooting) {
-            if (setting.IsAutomatic) {
+            if (_settings.IsAutomatic) {
                 SetContinuousShooting(isShooting);
             }
             else {
-                if (!InFireDelay) AudioController.Instance.PlaySfx(shootOrigin.position, setting.ShootSound);
-                ShootAction();
+                if (!_inFireDelay) AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                _shootActions[_settings.Type]();
             }
         }
 
-        protected void ShootInDirection(Ray direction) {
-            if (InFireDelay || CurrentAmmoCount <= 0) return;
+        private void ShootInDirection(Ray direction) {
+            if (_inFireDelay || _currentAmmoCount <= 0) return;
 
-            if (Physics.Raycast(direction, out var hit, setting.MaxDistance)) {
+            if (Physics.Raycast(direction, out var hit, _settings.MaxDistance)) {
                 if (hit.transform.gameObject.TryGetComponent<IDamageable>(out var damageable)) {
                     Debug.Log($"Damageable was shot");
-                    damageable.Damage(setting.GetWeaponDamage(hit.distance));
+                    damageable.Damage(_settings.GetWeaponDamage(hit.distance));
                 }
             }
             
             var bulletDirection = direction.direction.normalized;
-            var bullet = Instantiate(bulletPrefab, shootOrigin.position, Quaternion.LookRotation(bulletDirection));
-            bullet.AddForce(bulletDirection, setting.BulletSpeed);
+            var bullet = Instantiate(_bulletPrefab, _shootOrigin.position, Quaternion.LookRotation(bulletDirection));
+            bullet.AddForce(bulletDirection, _settings.BulletSpeed);
 
-            InFireDelay = true;
-            StartCoroutine(RemoveFireDelayLater(setting.FireDelay));
-            CurrentAmmoCount--;
+            _inFireDelay = true;
+            StartCoroutine(RemoveFireDelayLater(_settings.FireDelay));
+            _currentAmmoCount--;
         }
 
-        protected void ShootForward() {
+        private void ShootForward() {
             var forwardRay = _screenPointToRay(new Vector2(Screen.width / 2f, Screen.height / 2f));
-
             ShootInDirection(forwardRay);
         }
 
-        protected void ShootForwardWithDeviation(float angleDeviation) {
-            var widthDeviation = Screen.width / 2f * (1f - angleDeviation / 90f);
-            var heightDeviation = Screen.height / 2f * (1f - angleDeviation / 90f);
-
-            var ray = _screenPointToRay(new Vector2(
-                    Random.Range(widthDeviation, Screen.width - widthDeviation),
-                    Random.Range(heightDeviation, Screen.height - heightDeviation)));
-            ShootInDirection(ray);
+        private void ShootForwardWithDeviation() {
+            ShootInDirection(GetShootRay(_settings.DeviationAngle));
         }
 
-        protected void ShootQueue(Action shootAction, int bulletCount) {
+        private void ShootQueue(Action shootAction) {
+            var bulletCount = _settings.QueueLength;
+            bool firstWasShot = false;
+            
             IEnumerator ShootRepeatedly() {
                 while (bulletCount > 0) {
+                    // Workaround existing structure: When using burst sound is played only once
+                    // despite bullet being shot several times.
+                    if (firstWasShot) firstWasShot = true;
+                    else AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                    
                     shootAction();
                     bulletCount--;
-                    yield return new WaitForSeconds(setting.FireDelay);
+                    yield return new WaitForSeconds(_settings.FireDelay);
                 }
             }
 
             StartCoroutine(ShootRepeatedly());
         }
 
-        protected void ShootBurst(int spreadAngle, int bulletsPerShoot) {
-            if (InFireDelay || CurrentAmmoCount <= 0) return;
-            
-            var widthDeviation = Screen.width / 2f * (1f - spreadAngle / 90f);
-            var heightDeviation = Screen.height / 2f * (1f - spreadAngle / 90f);
-            
-            while (bulletsPerShoot > 0) {
-                var ray = _screenPointToRay(
-                    new Vector2(
-                        Random.Range(widthDeviation, Screen.width - widthDeviation),
-                        Random.Range(heightDeviation, Screen.height - heightDeviation)));
+        private void ShootBurst() {
+            if (_inFireDelay || _currentAmmoCount <= 0) return;
+
+            var palletCount = _settings.BurstPalletCount;
+            while (palletCount > 0) {
+                var ray = GetShootRay(_settings.DeviationAngle);
                 
-                if (Physics.Raycast(ray, out var hit, setting.MaxDistance)) {
+                if (Physics.Raycast(ray, out var hit, _settings.MaxDistance)) {
                     if (hit.transform.gameObject.TryGetComponent<IDamageable>(out var damageable))
-                        damageable.Damage(setting.GetWeaponDamage(hit.distance));
+                        damageable.Damage(_settings.GetWeaponDamage(hit.distance));
                 }
             
                 var bulletDirection = ray.direction.normalized;
-                var bullet = Instantiate(bulletPrefab, shootOrigin.position, Quaternion.LookRotation(bulletDirection));
-                bullet.AddForce(bulletDirection, setting.BulletSpeed);
+                var bullet = Instantiate(_bulletPrefab, _shootOrigin.position, Quaternion.LookRotation(bulletDirection));
+                bullet.AddForce(bulletDirection, _settings.BulletSpeed);
                 
-                bulletsPerShoot--;
+                palletCount--;
             }
 
-            InFireDelay = true;
-            StartCoroutine(RemoveFireDelayLater(setting.FireDelay));
-            CurrentAmmoCount--;
+            _inFireDelay = true;
+            StartCoroutine(RemoveFireDelayLater(_settings.FireDelay));
+            _currentAmmoCount--;
         }
         
         public void Reload() {
-            InFireDelay = true;
-            CurrentAmmoCount = setting.MaxAmmo;
-            StartCoroutine(RemoveFireDelayLater(setting.ReloadTime));
+            _inFireDelay = true;
+            _currentAmmoCount = _settings.MaxAmmo;
+            StartCoroutine(RemoveFireDelayLater(_settings.ReloadTime));
         }
 
         public void DetachFromParent() {
-            weaponCollider.enabled = true;
-            weaponBody.isKinematic = false;
-            weaponBody.useGravity = true;
+            _weaponCollider.enabled = true;
+            _weaponBody.isKinematic = false;
+            _weaponBody.useGravity = true;
             transform.parent = null;
         }
 
         public void AttachTo(Transform parent) {
-            weaponCollider.enabled = false;
-            weaponBody.isKinematic = true;
-            weaponBody.useGravity = false;
+            _weaponCollider.enabled = false;
+            _weaponBody.isKinematic = true;
+            _weaponBody.useGravity = false;
 
             var thisWeaponTransform = transform;
             thisWeaponTransform.rotation = Quaternion.identity;
@@ -158,12 +180,12 @@ namespace Weapons.Abstract {
             transform.SetParent(parent, false);
         }
 
-        public void Throw(Vector3 force) => weaponBody.AddForce(force, ForceMode.Impulse);
+        public void Throw(Vector3 force) => _weaponBody.AddForce(force, ForceMode.Impulse);
         public void ThrowForward(float force) => Throw(Vector3.forward * force);
 
-        protected IEnumerator RemoveFireDelayLater(float time) {
+        private IEnumerator RemoveFireDelayLater(float time) {
             yield return new WaitForSeconds(time);
-            InFireDelay = false;
+            _inFireDelay = false;
         }
         
         public void OnCollisionEnter(Collision other) {

@@ -6,68 +6,68 @@ using Weapons.Abstract;
 namespace Weapons {
     [Serializable]
     public class WeaponController {
-        [SerializeField] private Transform weaponAttachPoint;
-        [SerializeField] private float throwForce = 5f;
-        [SerializeField] private List<WeaponBase> weaponArray;
+        [SerializeField] private Transform _weaponAttachPoint;
+        [SerializeField] private float _throwForce = 5f;
+        [SerializeField] private List<WeaponBase> _weaponArray;
         private int _currentWeaponIndex;
 
-        public WeaponBase CurrentWeapon =>
-            weaponArray.Count > 0 ? weaponArray[_currentWeaponIndex] : null;
+        public Abstract.WeaponBase CurrentWeapon =>
+            _weaponArray.Count > 0 ? _weaponArray[_currentWeaponIndex] : null;
 
         public void InitializeSelf() {
-            foreach (var weapon in weaponArray) weapon.gameObject.SetActive(false);
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
+            foreach (var weapon in _weaponArray) weapon.gameObject.SetActive(false);
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
         }
 
         public void DropCurrentWeapon() {
-            if (weaponArray.Count == 0) return;
+            if (_weaponArray.Count == 0) return;
             // Remove current weapon from the list
-            var currentWeapon = weaponArray[_currentWeaponIndex];
-            weaponArray.Remove(weaponArray[_currentWeaponIndex]);
+            var currentWeapon = _weaponArray[_currentWeaponIndex];
+            _weaponArray.Remove(_weaponArray[_currentWeaponIndex]);
             // Select previous if possible 
-            if (weaponArray.Count > 0) {
+            if (_weaponArray.Count > 0) {
                 _currentWeaponIndex--;
-                if (_currentWeaponIndex < 0) _currentWeaponIndex = weaponArray.Count - 1;
-                weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
+                if (_currentWeaponIndex < 0) _currentWeaponIndex = _weaponArray.Count - 1;
+                _weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
             }
             // Detach and send flying forward
             currentWeapon.DetachFromParent();
-            currentWeapon.ThrowForward(throwForce);
+            currentWeapon.ThrowForward(_throwForce);
         }
 
-        public bool ContainsWeapon(WeaponBase weapon) => weaponArray.Contains(weapon);
+        public bool ContainsWeapon(Abstract.WeaponBase weapon) => _weaponArray.Contains(weapon);
 
-        public void AddWeapon(WeaponBase newWeapon) {
+        public void AddWeapon(Abstract.WeaponBase newWeapon) {
             // Append new weapon
-            newWeapon.AttachTo(weaponAttachPoint);
-            weaponArray.Add(newWeapon);
+            newWeapon.AttachTo(_weaponAttachPoint);
+            _weaponArray.Add(newWeapon);
             // Select new weapon as active (it's always at the very end of list)
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
-            _currentWeaponIndex = weaponArray.Count - 1;
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
+            _currentWeaponIndex = _weaponArray.Count - 1;
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
         }
 
         public void ChangeNextWeapon() {
-            if (weaponArray.Count == 0) return;
+            if (_weaponArray.Count == 0) return;
             
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
             _currentWeaponIndex++;
-            if (_currentWeaponIndex == weaponArray.Count) _currentWeaponIndex = 0;
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
+            if (_currentWeaponIndex == _weaponArray.Count) _currentWeaponIndex = 0;
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
         }
 
         public void ChangePreviousWeapon() {
-            if (weaponArray.Count == 0) return;
+            if (_weaponArray.Count == 0) return;
             
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(false);
             _currentWeaponIndex--;
-            if (_currentWeaponIndex < 0) _currentWeaponIndex = weaponArray.Count - 1;
-            weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
+            if (_currentWeaponIndex < 0) _currentWeaponIndex = _weaponArray.Count - 1;
+            _weaponArray[_currentWeaponIndex].gameObject.SetActive(true);
         }
 
         public void Shoot(bool isShootings) {
-            if (weaponArray.Count == 0) return;
-            weaponArray[_currentWeaponIndex].Shoot(isShootings);
+            if (_weaponArray.Count == 0) return;
+            _weaponArray[_currentWeaponIndex].Shoot(isShootings);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Player {
     public class PlayerController : MonoBehaviour {
         [SerializeField] private CharacterController controller;
         [SerializeField] private Transform attachedCamera;
-        [SerializeField] private WeaponController weaponController;
+        [SerializeField] private Weapons.WeaponController weaponController;
         [SerializeField] private PlayerInput _inputAction;
         private List<WeaponBase> _recentlyDroppedWeapons;
         [SerializeField] private float pickupResetDuration = 1.5f;
