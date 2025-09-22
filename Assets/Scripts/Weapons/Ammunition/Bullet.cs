@@ -1,29 +1,60 @@
+using System.Collections;
+using Core.Behaviour.ObjectPool;
 using UnityEngine;
 using Weapons.Abstract;
 
-namespace Weapons.Ammunition {
+namespace Weapons.Ammunition
+{
     [RequireComponent(typeof(Rigidbody))]
-    public class Bullet : MonoBehaviour {
+    public class Bullet : MonoBehaviour
+    {
+        private ObjectPoolItem<Bullet> _myItem;
         [SerializeField] private Rigidbody bulletBody;
-        [SerializeField] private bool destroyOnCollision = true;
-        [SerializeField] private float destroyDelay = 3f;
+        [SerializeField] private bool _destroyOnCollision = true;
+        [SerializeField] private float _destroyDelay = 3f;
+
         [Space]
         [SerializeField] private Transform decalPrefab;
-        [SerializeField] private float decalDestroyDelay = 5f;
+        [SerializeField] private float _decalDestroyDelay = 5f;
+        private Coroutine _activeCoroutine;
 
-        private void Awake() => Destroy(gameObject, destroyDelay);
+        private void Awake()
+        {
+            IEnumerator DisableAfter(float time)
+            {
+                yield return new WaitForSeconds(time);
+                if (gameObject.activeInHierarchy) gameObject.SetActive(false);
+                _activeCoroutine = null;
+            }
 
-        private void OnCollisionEnter(Collision other) {
+            _activeCoroutine = StartCoroutine(DisableAfter(_destroyDelay));
+        }
+
+        // Since bullet doesn't know it's an object pool item and I can't really make ObjectPoolItem<T>
+        // an abstract class (because of object creation) this workaround is here.
+        public void SetObjectPoolItem(ObjectPoolItem<Bullet> item)
+        {
+            _myItem = item;
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
             if (other.gameObject.GetComponent<Bullet>() ||
                 other.gameObject.GetComponent<WeaponBase>()) return;
-            
+
             var collisionPoint = other.GetContact(0);
             var decalRotation = Quaternion.LookRotation(collisionPoint.normal);
             var decal = Instantiate(decalPrefab, collisionPoint.point, decalRotation);
             decal.SetParent(other.transform, true);
-            Destroy(decal.gameObject, decalDestroyDelay);
-            
-            if (destroyOnCollision) Destroy(gameObject);
+            Destroy(decal.gameObject, _decalDestroyDelay);
+
+            if (_destroyOnCollision) gameObject.SetActive(false);
+        }
+
+        private void OnDisable()
+        {
+            if (_activeCoroutine != null) StopCoroutine(_activeCoroutine);
+            _myItem.Retrieve();
         }
 
         public void AddForce(Vector3 direction, float speed) =>

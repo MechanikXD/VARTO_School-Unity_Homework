@@ -11,7 +11,7 @@ namespace Weapons {
         [SerializeField] private List<WeaponBase> _weaponArray;
         private int _currentWeaponIndex;
 
-        public Abstract.WeaponBase CurrentWeapon =>
+        public WeaponBase CurrentWeapon =>
             _weaponArray.Count > 0 ? _weaponArray[_currentWeaponIndex] : null;
 
         public void InitializeSelf() {

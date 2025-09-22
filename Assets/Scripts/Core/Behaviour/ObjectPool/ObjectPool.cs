@@ -7,7 +7,7 @@ namespace Core.Behaviour.ObjectPool
     public class ObjectPool<T> where T : Object
     {
         private T _original;
-        private ObjectPoolOverflowHandlingMode _overflowHandlingMode;
+        private ObjectPoolHandlingMode _handlingMode;
 
         private Stack<ObjectPoolItem<T>> _pool;
         private LinkedList<ObjectPoolItem<T>> _inUse;
@@ -18,18 +18,18 @@ namespace Core.Behaviour.ObjectPool
         private const float POOL_EXPAND_FACTOR = 1.5f;
 
         private readonly static
-            Dictionary<ObjectPoolOverflowHandlingMode, Func<ObjectPool<T>, ObjectPoolItem<T>>>
+            Dictionary<ObjectPoolHandlingMode, Func<ObjectPool<T>, ObjectPoolItem<T>>>
             OverflowHandlers =
-                new Dictionary<ObjectPoolOverflowHandlingMode,
+                new Dictionary<ObjectPoolHandlingMode,
                     Func<ObjectPool<T>, ObjectPoolItem<T>>>
                 {
-                    [ObjectPoolOverflowHandlingMode.CreateInstances] = pool => pool.CreateNew(),
-                    [ObjectPoolOverflowHandlingMode.ExpandPool] = pool =>
+                    [ObjectPoolHandlingMode.CreateInstances] = pool => pool.CreateNew(),
+                    [ObjectPoolHandlingMode.ExpandPool] = pool =>
                     {
                         pool.ExpandPool((int)(pool.Capacity * POOL_EXPAND_FACTOR));
                         return pool.Get();
                     },
-                    [ObjectPoolOverflowHandlingMode.RefillPool] = pool =>
+                    [ObjectPoolHandlingMode.RefillPool] = pool =>
                     {
                         var count = (int)(pool.Capacity * POOL_REFILL_PERCENT);
                         for (var i = 0; i < count; i++)
@@ -40,7 +40,7 @@ namespace Core.Behaviour.ObjectPool
 
                         return pool.Get();
                     },
-                    [ObjectPoolOverflowHandlingMode.ReuseExisting] = pool =>
+                    [ObjectPoolHandlingMode.ReuseExisting] = pool =>
                     {
                         var latest = pool._inUse.First;
                         pool._inUse.RemoveFirst();
@@ -57,7 +57,7 @@ namespace Core.Behaviour.ObjectPool
                 return value;
             }
 
-            return OverflowHandlers[_overflowHandlingMode](this);
+            return OverflowHandlers[_handlingMode](this);
         }
 
         public T Release(ObjectPoolItem<T> value)
@@ -68,15 +68,31 @@ namespace Core.Behaviour.ObjectPool
             return data;
         }
 
+        public void Clear()
+        {
+            foreach (var obj in _pool)
+            {
+                Object.Destroy(obj.Item);
+            }
+            _pool.Clear();
+            
+            foreach (var obj in _inUse)
+            {
+                Object.Destroy(obj.Item);
+            }
+            _inUse.Clear();
+            _original = null;
+            Capacity = 0;
+        }
+
         public void Initialize(T copycat, int capacity,
-            ObjectPoolOverflowHandlingMode overflowHandlingMode =
-                ObjectPoolOverflowHandlingMode.ExpandPool)
+            ObjectPoolHandlingMode handlingMode = ObjectPoolHandlingMode.ExpandPool)
         {
             _original = copycat;
             _pool = new Stack<ObjectPoolItem<T>>(capacity);
             ExpandPool(capacity);
             _inUse = new LinkedList<ObjectPoolItem<T>>();
-            _overflowHandlingMode = overflowHandlingMode;
+            _handlingMode = handlingMode;
         }
 
         private void ExpandPool(int newCapacity, bool instantiateMissing = true)

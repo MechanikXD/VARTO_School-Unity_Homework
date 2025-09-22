@@ -1,6 +1,6 @@
 namespace Core.Behaviour.ObjectPool
 {
-    public enum ObjectPoolOverflowHandlingMode
+    public enum ObjectPoolHandlingMode
     {
         CreateInstances,
         ExpandPool,

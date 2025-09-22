@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
+using Core.Behaviour.ObjectPool;
 using Enemy.Damageable;
 using Player;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace Weapons.Abstract {
         private void Initialize() {
             _currentAmmoCount = _settings.MaxAmmo;
             _screenPointToRay = Camera.main!.ScreenPointToRay;
+            if (!ObjectPoolManager.Contains<Bullet>()) ObjectPoolManager.Create(_bulletPrefab, 50);
 
             _shootActions = new Dictionary<ShootType, Action>() {
                 [ShootType.Straight] = ShootForward,
@@ -40,6 +42,8 @@ namespace Weapons.Abstract {
                 [ShootType.Custom] = () => {}
             };
         }
+
+        #region Shooting
 
         public void SetCustomShootBehaviour(Action behaviour) {
             _shootActions[ShootType.Custom] = behaviour;
@@ -88,14 +92,11 @@ namespace Weapons.Abstract {
 
             if (Physics.Raycast(direction, out var hit, _settings.MaxDistance)) {
                 if (hit.transform.gameObject.TryGetComponent<IDamageable>(out var damageable)) {
-                    Debug.Log($"Damageable was shot");
                     damageable.Damage(_settings.GetWeaponDamage(hit.distance));
                 }
             }
-            
-            var bulletDirection = direction.direction.normalized;
-            var bullet = Instantiate(_bulletPrefab, _shootOrigin.position, Quaternion.LookRotation(bulletDirection));
-            bullet.AddForce(bulletDirection, _settings.BulletSpeed);
+
+            ShootBullet(direction);
 
             _inFireDelay = true;
             StartCoroutine(RemoveFireDelayLater(_settings.FireDelay));
@@ -153,6 +154,21 @@ namespace Weapons.Abstract {
             _inFireDelay = true;
             StartCoroutine(RemoveFireDelayLater(_settings.FireDelay));
             _currentAmmoCount--;
+        }
+
+        #endregion
+
+        private void ShootBullet(Ray direction)
+        {
+            var bulletDirection = direction.direction.normalized;
+            var bulletPosition = _shootOrigin.position;
+            
+            var bullet = ObjectPoolManager.Get<Bullet>().Get();
+            bullet.Item.enabled = true;
+            bullet.Item.transform.position = bulletPosition;
+            bullet.Item.transform.rotation = Quaternion.LookRotation(bulletPosition);
+            
+            bullet.Item.AddForce(bulletDirection, _settings.BulletSpeed);
         }
         
         public void Reload() {

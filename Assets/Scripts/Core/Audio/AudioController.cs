@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using Core.Behaviour.Singleton;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Core.Audio {
-    public class AudioController : MonoBehaviour {
-        public static AudioController Instance;
-
+    public class AudioController : SingletonBase<AudioController> {
         private Dictionary<string, AudioSource> _playingMusic;
         [Header("Mixer")]
         [SerializeField] private AudioMixer _masterAudioMixer;
@@ -17,18 +16,7 @@ namespace Core.Audio {
         [SerializeField] private AudioSourceSettings _sfxSource;
         [SerializeField] private AudioSourceSettings _musicSource;
 
-        private void Awake() => Initialize();
-
-        private void Initialize() {
-            // Make singleton
-            if (Instance != null) {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
+        protected override void Initialize() {
             _playingMusic = new Dictionary<string, AudioSource>();
             // TODO: Create Audio Sources if don't have serialized.
         }
