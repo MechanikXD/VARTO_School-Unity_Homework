@@ -1,5 +1,14 @@
-# Created by https://www.toptal.com/developers/gitignore/api/unity,rider
-# Edit at https://www.toptal.com/developers/gitignore?templates=unity,rider
+# Created by https://www.toptal.com/developers/gitignore/api/unity,rider,firebase
+# Edit at https://www.toptal.com/developers/gitignore?templates=unity,rider,firebase
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
 
 ### Rider ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -152,4 +161,4 @@ sysinfo.txt
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# End of https://www.toptal.com/developers/gitignore/api/unity,rider
+# End of https://www.toptal.com/developers/gitignore/api/unity,rider,firebase
