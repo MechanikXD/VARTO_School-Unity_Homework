@@ -20,6 +20,11 @@ namespace Weapons.Ammunition
 
         private void Awake()
         {
+            if (gameObject.activeInHierarchy) gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
             IEnumerator DisableAfter(float time)
             {
                 yield return new WaitForSeconds(time);
@@ -54,7 +59,7 @@ namespace Weapons.Ammunition
         private void OnDisable()
         {
             if (_activeCoroutine != null) StopCoroutine(_activeCoroutine);
-            _myItem.Retrieve();
+            _myItem?.Retrieve();
         }
 
         public void AddForce(Vector3 direction, float speed) =>

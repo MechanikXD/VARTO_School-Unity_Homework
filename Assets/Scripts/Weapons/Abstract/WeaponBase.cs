@@ -81,7 +81,7 @@ namespace Weapons.Abstract {
             if (_settings.IsAutomatic) {
                 SetContinuousShooting(isShooting);
             }
-            else {
+            else if (_currentAmmoCount > 0) {
                 if (!_inFireDelay) AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
                 _shootActions[_settings.Type]();
             }
@@ -144,6 +144,7 @@ namespace Weapons.Abstract {
                         damageable.Damage(_settings.GetWeaponDamage(hit.distance));
                 }
             
+                ShootBullet(ray);
                 var bulletDirection = ray.direction.normalized;
                 var bullet = Instantiate(_bulletPrefab, _shootOrigin.position, Quaternion.LookRotation(bulletDirection));
                 bullet.AddForce(bulletDirection, _settings.BulletSpeed);
@@ -164,9 +165,10 @@ namespace Weapons.Abstract {
             var bulletPosition = _shootOrigin.position;
             
             var bullet = ObjectPoolManager.Get<Bullet>().Get();
-            bullet.Item.enabled = true;
+            bullet.Item.SetObjectPoolItem(bullet);
+            bullet.Item.gameObject.SetActive(true);
             bullet.Item.transform.position = bulletPosition;
-            bullet.Item.transform.rotation = Quaternion.LookRotation(bulletPosition);
+            bullet.Item.transform.rotation = Quaternion.LookRotation(bulletDirection);
             
             bullet.Item.AddForce(bulletDirection, _settings.BulletSpeed);
         }

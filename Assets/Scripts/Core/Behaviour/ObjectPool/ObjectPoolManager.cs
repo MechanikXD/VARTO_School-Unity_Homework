@@ -6,16 +6,16 @@ namespace Core.Behaviour.ObjectPool
 {
     public static class ObjectPoolManager
     {
-        private static Dictionary<Type, object> _pools;
+        private readonly static Dictionary<Type, object> Pools = new Dictionary<Type, object>();
 
         public static ObjectPool<T> Get<T>() where T : Object
         {
-            return (ObjectPool<T>)_pools[typeof(T)];
+            return (ObjectPool<T>)Pools[typeof(T)];
         }
         
         public static bool Contains<T>() where T : Object
         {
-            return _pools.ContainsKey(typeof(T));
+            return Pools.ContainsKey(typeof(T));
         }
         
         public static void Create<T>(T copycat, int capacity, 
@@ -23,13 +23,13 @@ namespace Core.Behaviour.ObjectPool
         {
             var newPool = new ObjectPool<T>();
             newPool.Initialize(copycat, capacity, mode);
-            _pools.Add(typeof(T), newPool);
+            Pools.Add(typeof(T), newPool);
         }
 
         public static void Delete<T>() where T : Object
         {
             Get<T>().Clear();
-            _pools.Remove(typeof(T));
+            Pools.Remove(typeof(T));
         }
     }
 }
