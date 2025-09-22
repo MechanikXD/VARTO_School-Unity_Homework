@@ -735,6 +735,7 @@ MonoBehaviour:
     - {fileID: 1330571470}
   _inputAction: {fileID: 315254554}
   pickupResetDuration: 1.5
+  _startPosition: {x: 228, y: 11, z: 300}
   mouseSensitivity: 25
   moveSpeed: 7
   _runSpeed: 15
@@ -3963,6 +3964,51 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &453590330
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 453590332}
+  - component: {fileID: 453590331}
+  m_Layer: 0
+  m_Name: Firebase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &453590331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453590330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b899f18a606457ab02c3cfd5fb25bf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dontDestroyOnLoad: 0
+--- !u!4 &453590332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453590330}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &460465463
 GameObject:
   m_ObjectHideFlags: 0
@@ -18073,6 +18119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab0833d20be40298dcf186d1e594a1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dontDestroyOnLoad: 0
   _masterAudioMixer: {fileID: 24100000, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _defaultGroup: {fileID: 24500006, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
   _pausedGroup: {fileID: -1555527050988983282, guid: 66d86a7ca6e8e1f4bb170f6f8790d04b, type: 2}
@@ -21499,3 +21546,4 @@ SceneRoots:
   - {fileID: 315254559}
   - {fileID: 1210127872}
   - {fileID: 1645692136}
+  - {fileID: 453590332}

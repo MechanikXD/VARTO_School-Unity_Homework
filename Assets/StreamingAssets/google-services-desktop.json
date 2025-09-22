@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "870529763270",
+    "firebase_url": "https://unityhomework-8a616-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "unityhomework-8a616",
+    "storage_bucket": "unityhomework-8a616.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870529763270:android:633e3a6f82e5248e0854c7",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.HomeWorks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-IwFXj1qb6FqzNwi2VoDWZq6zHtOjUeA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
