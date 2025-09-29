@@ -6,10 +6,18 @@
 **/node_modules/*
 **/.firebaserc
 
-Assets/Firebase/*
-Assets/ExternalDependencyManager/*
-Assets/Plugins/Android/*
-Assets/Plugins/iOS/*
+# Unity External Dependency Manager - cache files only
+Assets/ExternalDependencyManager/Editor/*ResolverDependencies.xml
+Assets/ExternalDependencyManager/Editor/*Dependencies.xml
+
+# Android - ignore generated, keep SDK .aar/.dll
+Assets/Plugins/Android/Firebase/res/
+Assets/Plugins/Android/Firebase/*.xml
+
+# iOS - ignore Pods, keep Firebase SDK frameworks
+Pods/
+Podfile.lock
+*.xcworkspace
 
 ### Firebase Patch ###
 .runtimeconfig.json
