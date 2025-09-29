@@ -63,8 +63,11 @@ namespace Core.Behaviour.ObjectPool
         public T Release(ObjectPoolItem<T> value)
         {
             var data = value.Item;
-            var newItem = new ObjectPoolItem<T>(this, Object.Instantiate(_original));
-            if (_pool.Count < Capacity) _pool.Push(newItem);
+            _inUse.Remove(value);
+            if (_pool.Count >= Capacity) return data; // No need in new instances
+
+            value = new ObjectPoolItem<T>(this, Object.Instantiate(_original));
+            _pool.Push(value);
             return data;
         }
 
