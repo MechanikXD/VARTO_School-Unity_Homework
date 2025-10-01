@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Core.Audio {
-    public class AudioController : SingletonBase<AudioController> {
-        private Dictionary<string, AudioSource> _playingMusic;
+    public class AudioController : SingletonBase<AudioController>
+    {
+        private readonly Dictionary<string, AudioSource> _playingMusic =
+            new Dictionary<string, AudioSource>();
+        
         [Header("Mixer")]
         [SerializeField] private AudioMixer _masterAudioMixer;
         [SerializeField] private AudioMixerSnapshot _defaultGroup;
@@ -15,11 +18,6 @@ namespace Core.Audio {
         [Header("Audio source settings")]
         [SerializeField] private AudioSourceSettings _sfxSource;
         [SerializeField] private AudioSourceSettings _musicSource;
-
-        protected override void Initialize() {
-            _playingMusic = new Dictionary<string, AudioSource>();
-            // TODO: Create Audio Sources if don't have serialized.
-        }
 
         public void PlayMusic(string key, AudioClip musicClip) {
             if (_playingMusic.ContainsKey(key)) {

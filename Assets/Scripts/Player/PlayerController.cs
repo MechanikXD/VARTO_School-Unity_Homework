@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons;
 using Weapons.Abstract;
+using Zenject;
 
 namespace Player
 {
@@ -52,26 +53,31 @@ namespace Player
 
         public static event Action PausePressed;
 
-        private void Start()
+        private void Awake()
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        [Inject]
+        public void Initialize(AudioController audioController, FirebaseProxy firebase)
+        {
             _lastFrameWasGrounded = true;
             
             _recentlyDroppedWeapons = new List<WeaponBase>();
             weaponController.InitializeSelf();
-            LoadPlayerPositionAsync().Forget();
             
             _moveKey = _inputAction.actions["Move"];
             _sprintKey = _inputAction.actions.FindAction("Sprint");
             
-            AudioController.Instance.PlayMusic("Ambient", _ambient);
-            _moveCoroutine = StartCoroutine(PlayWalkSound());
+            audioController.PlayMusic("Ambient", _ambient);
+            _moveCoroutine = StartCoroutine(PlayWalkSound(audioController));
+            LoadPlayerPositionAsync(firebase).Forget();
         }
-
-        private async UniTask LoadPlayerPositionAsync()
+        
+        private async UniTask LoadPlayerPositionAsync(FirebaseProxy firebase)
         {
-            var position = await FirebaseProxy.Instance.GetPositionAsync(_startPosition);
+            var position = await firebase.GetPositionAsync(_startPosition);
             position.y += 1f;
             transform.position = position;
         }
@@ -118,7 +124,7 @@ namespace Player
             return playerRelativeVector;
         }
 
-        private IEnumerator PlayWalkSound()
+        private IEnumerator PlayWalkSound(AudioController audioController)
         {
             while (true)
             {
@@ -127,12 +133,12 @@ namespace Player
                     _moveSoundIsDelayed = true;
                     if (_sprintKey.IsPressed())
                     {
-                        AudioController.Instance.PlaySfx(transform.position, _runSound);
+                        audioController.PlaySfx(transform.position, _runSound);
                         yield return new WaitForSeconds(_runSoundDelay + _runSound.length);
                     }
                     else
                     {
-                        AudioController.Instance.PlaySfx(transform.position, _walkSound);
+                        audioController.PlaySfx(transform.position, _walkSound);
                         yield return new WaitForSeconds(_walkSoundDelay + _walkSound.length);
                     }
 
