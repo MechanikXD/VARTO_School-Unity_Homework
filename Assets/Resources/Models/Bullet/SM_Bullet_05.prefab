@@ -73,11 +73,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a5381368bc94eba85aac0504ff8bd92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletBody: {fileID: 8404417699766482798}
+  _bulletBody: {fileID: 0}
   _destroyOnCollision: 1
   _destroyDelay: 3
-  decalPrefab: {fileID: 5520531071021126245, guid: 7b0bfae37b196304a9078dcf48b3dd4a, type: 3}
-  _decalDestroyDelay: 5
+  _decalPrefab: {fileID: 3834064246299415417, guid: 7b0bfae37b196304a9078dcf48b3dd4a, type: 3}
 --- !u!1 &3585594593242577515
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,17 +9,15 @@ namespace Weapons.Ammunition
     public class Bullet : MonoBehaviour
     {
         private ObjectPoolItem<Bullet> _myItem;
-        [SerializeField] private Rigidbody bulletBody;
+        private Coroutine _activeCoroutine;
+        private Rigidbody _bulletBody;
         [SerializeField] private bool _destroyOnCollision = true;
         [SerializeField] private float _destroyDelay = 3f;
-
-        [Space]
-        [SerializeField] private Transform decalPrefab;
-        [SerializeField] private float _decalDestroyDelay = 5f;
-        private Coroutine _activeCoroutine;
-
+        [SerializeField] private Decal _decalPrefab;
+        
         private void Awake()
         {
+            _bulletBody = GetComponent<Rigidbody>();
             if (gameObject.activeInHierarchy) gameObject.SetActive(false);
         }
 
@@ -49,9 +47,8 @@ namespace Weapons.Ammunition
 
             var collisionPoint = other.GetContact(0);
             var decalRotation = Quaternion.LookRotation(collisionPoint.normal);
-            var decal = Instantiate(decalPrefab, collisionPoint.point, decalRotation);
-            decal.SetParent(other.transform, true);
-            Destroy(decal.gameObject, _decalDestroyDelay);
+            var decal = Instantiate(_decalPrefab, collisionPoint.point, decalRotation);
+            decal.transform.SetParent(other.transform, true);
 
             if (_destroyOnCollision) gameObject.SetActive(false);
         }
@@ -63,6 +60,6 @@ namespace Weapons.Ammunition
         }
 
         public void AddForce(Vector3 direction, float speed) =>
-            bulletBody.AddForce(direction * speed, ForceMode.Impulse);
+            _bulletBody.AddForce(direction * speed, ForceMode.Impulse);
     }
 }
