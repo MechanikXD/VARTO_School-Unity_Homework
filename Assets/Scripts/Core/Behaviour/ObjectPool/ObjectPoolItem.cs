@@ -13,7 +13,7 @@ namespace Core.Behaviour.ObjectPool
             Item = item;
         }
 
-        public void Retrieve()
+        public void Return()
         {
             _sourcePool.AcceptReturnee(this);
         }

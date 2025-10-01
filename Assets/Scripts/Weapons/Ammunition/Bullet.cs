@@ -59,7 +59,7 @@ namespace Weapons.Ammunition
         private void OnDisable()
         {
             if (_activeCoroutine != null) StopCoroutine(_activeCoroutine);
-            _myItem?.Retrieve();
+            _myItem?.Return();
         }
 
         public void AddForce(Vector3 direction, float speed) =>

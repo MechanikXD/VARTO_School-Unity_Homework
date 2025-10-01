@@ -18,11 +18,11 @@ namespace Core.Behaviour.ObjectPool
             return Pools.ContainsKey(typeof(T));
         }
         
-        public static void Create<T>(T copycat, int capacity, 
+        public static void Create<T>(T copycat, int capacity, Action<T> onGet=null, Action<T> onReturn=null, 
             ObjectPoolHandlingMode mode = ObjectPoolHandlingMode.ExpandPool) where T : Object
         {
             var newPool = new ObjectPool<T>();
-            newPool.Initialize(copycat, capacity, mode);
+            newPool.Initialize(copycat, capacity, onGet, onReturn, mode);
             Pools.Add(typeof(T), newPool);
         }
 

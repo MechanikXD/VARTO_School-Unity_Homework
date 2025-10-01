@@ -161,11 +161,12 @@ namespace Weapons.Abstract {
 
         private void ShootBullet(Ray direction)
         {
+            var bullet = ObjectPoolManager.Get<Bullet>().Get();
+            bullet.Item.SetObjectPoolItem(bullet);
+            
             var bulletDirection = direction.direction.normalized;
             var bulletPosition = _shootOrigin.position;
             
-            var bullet = ObjectPoolManager.Get<Bullet>().Get();
-            bullet.Item.SetObjectPoolItem(bullet);
             bullet.Item.gameObject.SetActive(true);
             bullet.Item.transform.position = bulletPosition;
             bullet.Item.transform.rotation = Quaternion.LookRotation(bulletDirection);
