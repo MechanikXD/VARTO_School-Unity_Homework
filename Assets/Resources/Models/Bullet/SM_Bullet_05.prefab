@@ -74,10 +74,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletBody: {fileID: 8404417699766482798}
-  destroyOnCollision: 1
-  destroyDelay: 3
+  _destroyOnCollision: 1
+  _destroyDelay: 3
   decalPrefab: {fileID: 5520531071021126245, guid: 7b0bfae37b196304a9078dcf48b3dd4a, type: 3}
-  decalDestroyDelay: 5
+  _decalDestroyDelay: 5
 --- !u!1 &3585594593242577515
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +178,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 40
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
