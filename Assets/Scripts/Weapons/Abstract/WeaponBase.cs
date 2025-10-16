@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
-using Core.Behaviour.ObjectPool;
 using Enemy.Damageable;
 using Player;
 using UnityEngine;
@@ -32,7 +31,7 @@ namespace Weapons.Abstract {
             _audioController = audioController;
             _currentAmmoCount = _settings.MaxAmmo;
             _screenPointToRay = Camera.main!.ScreenPointToRay;
-            if (!ObjectPoolManager.Contains<Bullet>()) ObjectPoolManager.Create(_bulletPrefab, 50);
+            // if (!ObjectPoolManager.Contains<Bullet>()) ObjectPoolManager.Create(_bulletPrefab, 50);
 
             _shootActions = new Dictionary<ShootType, Action>() {
                 [ShootType.Straight] = ShootForward,
@@ -162,17 +161,16 @@ namespace Weapons.Abstract {
 
         private void ShootBullet(Ray direction)
         {
-            var bullet = ObjectPoolManager.Get<Bullet>().Get();
-            bullet.Item.SetObjectPoolItem(bullet);
+            // var bullet = ObjectPoolManager.Get<Bullet>().Get();
+            var bullet = Instantiate(_bulletPrefab);
             
             var bulletDirection = direction.direction.normalized;
             var bulletPosition = _shootOrigin.position;
             
-            bullet.Item.gameObject.SetActive(true);
-            bullet.Item.transform.position = bulletPosition;
-            bullet.Item.transform.rotation = Quaternion.LookRotation(bulletDirection);
+            bullet.transform.position = bulletPosition;
+            bullet.transform.rotation = Quaternion.LookRotation(bulletDirection);
             
-            bullet.Item.AddForce(bulletDirection, _settings.BulletSpeed);
+            bullet.AddForce(bulletDirection, _settings.BulletSpeed);
         }
         
         public void Reload() {

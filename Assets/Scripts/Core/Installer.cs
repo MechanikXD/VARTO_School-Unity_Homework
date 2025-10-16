@@ -10,6 +10,7 @@ namespace Core
         {
             Container.Bind<FirebaseProxy>().FromComponentInHierarchy().AsSingle();
             Container.Bind<AudioController>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<string>().FromInstance("This text will be injected in bullets").AsSingle();
         }
     }
 }
