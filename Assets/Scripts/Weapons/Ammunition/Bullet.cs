@@ -8,8 +8,7 @@ namespace Weapons.Ammunition
     [RequireComponent(typeof(Rigidbody))]
     public class Bullet : MonoBehaviour
     {
-        private ObjectPoolItem<Bullet> _myItem;
-        [SerializeField] private Rigidbody bulletBody;
+        private Rigidbody _bulletBody;
         [SerializeField] private bool _destroyOnCollision = true;
         [SerializeField] private float _destroyDelay = 3f;
 
@@ -20,6 +19,7 @@ namespace Weapons.Ammunition
 
         private void Awake()
         {
+            _bulletBody = GetComponent<Rigidbody>();
             if (gameObject.activeInHierarchy) gameObject.SetActive(false);
         }
 
@@ -33,13 +33,6 @@ namespace Weapons.Ammunition
             }
 
             _activeCoroutine = StartCoroutine(DisableAfter(_destroyDelay));
-        }
-
-        // Since bullet doesn't know it's an object pool item and I can't really make ObjectPoolItem<T>
-        // an abstract class (because of object creation) this workaround is here.
-        public void SetObjectPoolItem(ObjectPoolItem<Bullet> item)
-        {
-            _myItem = item;
         }
 
         private void OnCollisionEnter(Collision other)
@@ -59,10 +52,10 @@ namespace Weapons.Ammunition
         private void OnDisable()
         {
             if (_activeCoroutine != null) StopCoroutine(_activeCoroutine);
-            _myItem?.Return();
+            ObjectPoolManager.Get<Bullet>().Return(this);
         }
 
         public void AddForce(Vector3 direction, float speed) =>
-            bulletBody.AddForce(direction * speed, ForceMode.Impulse);
+            _bulletBody.AddForce(direction * speed, ForceMode.Impulse);
     }
 }

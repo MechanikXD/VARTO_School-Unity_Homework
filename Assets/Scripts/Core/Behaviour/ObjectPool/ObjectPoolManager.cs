@@ -19,10 +19,10 @@ namespace Core.Behaviour.ObjectPool
         }
         
         public static void Create<T>(T copycat, int capacity, Action<T> onGet=null, Action<T> onReturn=null, 
-            ObjectPoolHandlingMode mode = ObjectPoolHandlingMode.ExpandPool) where T : Object
+            bool recordUsed=true, ObjectPoolHandlingMode mode = ObjectPoolHandlingMode.ExpandPool) where T : Object
         {
             var newPool = new ObjectPool<T>();
-            newPool.Initialize(copycat, capacity, onGet, onReturn, mode);
+            newPool.Initialize(copycat, capacity, onGet, onReturn, recordUsed, mode);
             Pools.Add(typeof(T), newPool);
         }
 

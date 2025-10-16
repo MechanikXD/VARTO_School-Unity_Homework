@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Core.Behaviour.ObjectPool
@@ -9,9 +10,10 @@ namespace Core.Behaviour.ObjectPool
     {
         private T _original;
         private ObjectPoolHandlingMode _handlingMode;
+        private bool _recordUsed;
 
-        private Stack<ObjectPoolItem<T>> _pool;
-        private LinkedList<ObjectPoolItem<T>> _inUse;
+        private Stack<T> _pool;
+        private LinkedList<T> _inUse;
 
         [CanBeNull] private Action<T> _onGet;
         [CanBeNull] private Action<T> _onReturn;
@@ -22,10 +24,10 @@ namespace Core.Behaviour.ObjectPool
         private const float POOL_EXPAND_FACTOR = 1.5f;
 
         private readonly static
-            Dictionary<ObjectPoolHandlingMode, Func<ObjectPool<T>, ObjectPoolItem<T>>>
+            Dictionary<ObjectPoolHandlingMode, Func<ObjectPool<T>, T>>
             OverflowHandlers =
                 new Dictionary<ObjectPoolHandlingMode,
-                    Func<ObjectPool<T>, ObjectPoolItem<T>>>
+                    Func<ObjectPool<T>, T>>
                 {
                     // Create new and give it
                     [ObjectPoolHandlingMode.CreateInstances] = pool =>
@@ -51,20 +53,20 @@ namespace Core.Behaviour.ObjectPool
 
                         return pool.Get();
                     },
-                    // Take objects that are being used (Prioritise oldest one's)  
+                    // Take objects that are being used (Prioritise the oldest one's)  
                     [ObjectPoolHandlingMode.ReuseExisting] = pool => pool.ReuseOldest()
                 };
 
         /// <summary>
         /// Gives an instance of an Object to use bound to this pool
         /// </summary>
-        public ObjectPoolItem<T> Get()
+        public T Get()
         {
             if (_pool.Count > 0)
             {
                 var value = _pool.Pop();
-                _inUse.AddLast(value);
-                _onGet?.Invoke(value.Item);
+                if (_recordUsed) _inUse.AddLast(value);
+                _onGet?.Invoke(value);
                 return value;
             }
 
@@ -72,19 +74,20 @@ namespace Core.Behaviour.ObjectPool
         }
 
         /// <summary>
-        /// Releases value from object pool to be use on it's own
+        /// Return value to object pool
         /// </summary>
         /// <param name="value"> Object you want to release </param>
         /// <returns> Released Object what no longer bound to this object pool </returns>
-        public T Release(ObjectPoolItem<T> value)
+        public void Return(T value)
         {
-            var data = value.Item;
-            _inUse.Remove(value);
-            if (_pool.Count >= Capacity) return data; // No need in new instances
+            if (_recordUsed && !_inUse.Remove(value))
+            {
+                Debug.LogWarning($"Object {value.name} was not a part of the pool. The value was accepted, but such behaviour may cause issues.");    
+            }
+            if (_pool.Count >= Capacity) return; // Pool is already full
 
-            value = new ObjectPoolItem<T>(this, Object.Instantiate(_original));
+            _onReturn?.Invoke(value);
             _pool.Push(value);
-            return data;
         }
 
         /// <summary>
@@ -94,14 +97,14 @@ namespace Core.Behaviour.ObjectPool
         {
             foreach (var obj in _pool)
             {
-                Object.Destroy(obj.Item);
+                Object.Destroy(obj);
             }
             _pool.Clear();
             
             foreach (var obj in _inUse)
             {
-                _onGet?.Invoke(obj.Item);
-                Object.Destroy(obj.Item);
+                _onGet?.Invoke(obj);
+                Object.Destroy(obj);
             }
             _inUse.Clear();
             _original = null;
@@ -115,16 +118,18 @@ namespace Core.Behaviour.ObjectPool
         /// <param name="capacity"> Max capacity of this pool </param>
         /// <param name="onGet"> Method or function that will be called alongside Get() on objects </param>
         /// <param name="onReturn"> Method or function that will be called alongside Return() on objects </param>
+        /// <param name="recordUsed"> Remember objects that being used </param>
         /// <param name="handlingMode"> How object pool will handle "overflow" state </param>
         public void Initialize(T copycat, int capacity, Action<T> onGet=null, Action<T> onReturn=null,
-            ObjectPoolHandlingMode handlingMode = ObjectPoolHandlingMode.ExpandPool)
+            bool recordUsed = true, ObjectPoolHandlingMode handlingMode = ObjectPoolHandlingMode.ExpandPool)
         {
             _original = copycat;
             _onGet = onGet;
             _onReturn = onReturn;
-            _pool = new Stack<ObjectPoolItem<T>>(capacity);
+            _recordUsed = recordUsed;
+            _pool = new Stack<T>(capacity);
             ExpandPool(capacity);
-            _inUse = new LinkedList<ObjectPoolItem<T>>();
+            _inUse = new LinkedList<T>();
             _handlingMode = handlingMode;
         }
 
@@ -133,7 +138,7 @@ namespace Core.Behaviour.ObjectPool
         {
             if (newCapacity <= Capacity) return;
 
-            var newStack = new Stack<ObjectPoolItem<T>>(newCapacity);
+            var newStack = new Stack<T>(newCapacity);
             foreach (var value in _pool)
             {
                 newStack.Push(value);
@@ -146,49 +151,37 @@ namespace Core.Behaviour.ObjectPool
                 for (var i = 0; i < newCapacity - Capacity; i++)
                 {
                     var newObject = Object.Instantiate(_original);
-                    var item = new ObjectPoolItem<T>(this, newObject);
-                    _pool.Push(item);
+                    _pool.Push(newObject);
                 }
             }
 
             Capacity = newCapacity;
         }
 
-        /// Method that ObjectPoolItem will be calling to return themself into pull 
-        internal void AcceptReturnee(ObjectPoolItem<T> item)
-        {
-            _inUse.Remove(item);
-
-            if (_pool.Count == Capacity)
-            {
-                Object.Destroy(item.Item);
-            }
-            else
-            {
-                _onReturn?.Invoke(item.Item);
-                _pool.Push(item);
-            }
-        }
-        
-        private void AddWithoutNotify(ObjectPoolItem<T> item)
+        private void AddWithoutNotify(T item)
         {
             if (_pool.Count < Capacity) _pool.Push(item);
         }
 
-        private ObjectPoolItem<T> ReuseOldest()
+        private T ReuseOldest()
         {
+            if (!_recordUsed)
+            {
+                Debug.LogError("You trying to reuse objects in pool, but disabled recording of sad objects!");
+                return null;
+            }
             var oldest = _inUse.First;
             _inUse.RemoveFirst();
             _inUse.AddLast(oldest);
-            _onGet?.Invoke(oldest.Value.Item);
+            _onGet?.Invoke(oldest.Value);
             return oldest.Value;
         }
 
-        private ObjectPoolItem<T> CreateNew(bool callOnGet=false)
+        private T CreateNew(bool callOnGet=false)
         {
-            var newInstance =  new ObjectPoolItem<T>(this, Object.Instantiate(_original));
-            _inUse.AddLast(newInstance);
-            if (callOnGet) _onGet?.Invoke(newInstance.Item);
+            var newInstance = Object.Instantiate(_original);
+            if (_recordUsed) _inUse.AddLast(newInstance);
+            if (callOnGet) _onGet?.Invoke(newInstance);
             return newInstance;
         }
     }
