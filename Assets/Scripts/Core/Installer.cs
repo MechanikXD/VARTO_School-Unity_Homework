@@ -1,4 +1,5 @@
-using Other;
+using Core.Audio;
+using Core.DataBase;
 using Zenject;
 
 namespace Core
@@ -7,10 +8,8 @@ namespace Core
     {
         public override void InstallBindings()
         {
-            // Put message in container for greeter to say
-            Container.Bind<string>().FromInstance("Hello World!").AsCached();
-            // But greeter itself, so it will be created on injection
-            Container.Bind<Greeter>().FromNewComponentOnNewGameObject().AsSingle();
+            Container.Bind<FirebaseProxy>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<AudioController>().FromComponentInHierarchy().AsSingle();
         }
     }
 }

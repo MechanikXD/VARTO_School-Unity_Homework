@@ -7,6 +7,7 @@ using Enemy.Damageable;
 using Player;
 using UnityEngine;
 using Weapons.Ammunition;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Weapons.Abstract {
@@ -23,12 +24,12 @@ namespace Weapons.Abstract {
         private Func<Vector3, Ray> _screenPointToRay;
 
         private bool _isShooting;
-        
-        private void Awake() {
-            Initialize();
-        }
+        private AudioController _audioController;
 
-        private void Initialize() {
+        [Inject]
+        private void Initialize(AudioController audioController)
+        {
+            _audioController = audioController;
             _currentAmmoCount = _settings.MaxAmmo;
             _screenPointToRay = Camera.main!.ScreenPointToRay;
             if (!ObjectPoolManager.Contains<Bullet>()) ObjectPoolManager.Create(_bulletPrefab, 50);
@@ -55,7 +56,7 @@ namespace Weapons.Abstract {
 
                 IEnumerator ShootContinuously() {
                     while (_isShooting) {
-                        if (!_inFireDelay) AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                        if (!_inFireDelay) _audioController.PlaySfx(_shootOrigin.position, _settings.ShootSound);
                         _shootActions[_settings.Type]();
                         yield return new WaitForSeconds(_settings.FireDelay);
                     }
@@ -82,7 +83,7 @@ namespace Weapons.Abstract {
                 SetContinuousShooting(isShooting);
             }
             else if (_currentAmmoCount > 0) {
-                if (!_inFireDelay) AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                if (!_inFireDelay) _audioController.PlaySfx(_shootOrigin.position, _settings.ShootSound);
                 _shootActions[_settings.Type]();
             }
         }
@@ -121,7 +122,7 @@ namespace Weapons.Abstract {
                     // Workaround existing structure: When using burst sound is played only once
                     // despite bullet being shot several times.
                     if (firstWasShot) firstWasShot = true;
-                    else AudioController.Instance.PlaySfx(_shootOrigin.position, _settings.ShootSound);
+                    else _audioController.PlaySfx(_shootOrigin.position, _settings.ShootSound);
                     
                     shootAction();
                     bulletCount--;

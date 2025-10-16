@@ -1,8 +1,10 @@
 using Core.Audio;
+using Core.DataBase;
 using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.View {
     public class PauseMenuView : MonoBehaviour {
@@ -11,6 +13,7 @@ namespace UI.View {
         [SerializeField] private Button _exitButton;
 
         private Canvas _thisCanvas;
+        private AudioController _audioController;
         
         private void Awake() {
             _thisCanvas = GetComponent<Canvas>();
@@ -18,6 +21,12 @@ namespace UI.View {
 
         private void Start() {
             DisableCanvas();
+        }
+
+        [Inject]
+        private void Initialize(AudioController audioController)
+        {
+            _audioController = audioController;
         }
 
         private void OnEnable() {
@@ -39,7 +48,7 @@ namespace UI.View {
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            AudioController.Instance.ChangeToPausedGroup();
+            _audioController.ChangeToPausedGroup();
         }
         
         public void DisableCanvas() {
@@ -47,7 +56,7 @@ namespace UI.View {
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            AudioController.Instance.ChangeToDefaultGroup();
+            _audioController.ChangeToDefaultGroup();
         }
 
         private void SwitchCanvasEnabled() {

@@ -5,7 +5,7 @@ namespace Core.Behaviour.Singleton
     public class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
     {
         [SerializeField] private bool _dontDestroyOnLoad;
-        public static T Instance;
+        protected T Instance;
 
         private void Awake()
         {

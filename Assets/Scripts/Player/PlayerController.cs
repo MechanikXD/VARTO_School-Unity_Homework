@@ -50,6 +50,9 @@ namespace Player
         private bool _isJumping;
         private bool _lastFrameWasGrounded;
         private InputAction _sprintKey;
+        
+        private FirebaseProxy _firebaseProxy;
+        private AudioController _audioController;
 
         public static event Action PausePressed;
 
@@ -62,6 +65,8 @@ namespace Player
         [Inject]
         public void Initialize(AudioController audioController, FirebaseProxy firebase)
         {
+            _firebaseProxy = firebase;
+            _audioController = audioController;
             _lastFrameWasGrounded = true;
             
             _recentlyDroppedWeapons = new List<WeaponBase>();
@@ -70,21 +75,21 @@ namespace Player
             _moveKey = _inputAction.actions["Move"];
             _sprintKey = _inputAction.actions.FindAction("Sprint");
             
-            audioController.PlayMusic("Ambient", _ambient);
-            _moveCoroutine = StartCoroutine(PlayWalkSound(audioController));
-            LoadPlayerPositionAsync(firebase).Forget();
+            _audioController.PlayMusic("Ambient", _ambient);
+            _moveCoroutine = StartCoroutine(PlayWalkSound());
+            LoadPlayerPositionAsync().Forget();
         }
         
-        private async UniTask LoadPlayerPositionAsync(FirebaseProxy firebase)
+        private async UniTask LoadPlayerPositionAsync()
         {
-            var position = await firebase.GetPositionAsync(_startPosition);
+            var position = await _firebaseProxy.GetPositionAsync(_startPosition);
             position.y += 1f;
             transform.position = position;
         }
 
         private void OnDisable()
         {
-            FirebaseProxy.Instance.WritePositionAsync(transform.position).Forget();
+            _firebaseProxy.WritePositionAsync(transform.position).Forget();
             StopCoroutine(_moveCoroutine);
         }
 
@@ -124,7 +129,7 @@ namespace Player
             return playerRelativeVector;
         }
 
-        private IEnumerator PlayWalkSound(AudioController audioController)
+        private IEnumerator PlayWalkSound()
         {
             while (true)
             {
@@ -133,12 +138,12 @@ namespace Player
                     _moveSoundIsDelayed = true;
                     if (_sprintKey.IsPressed())
                     {
-                        audioController.PlaySfx(transform.position, _runSound);
+                        _audioController.PlaySfx(transform.position, _runSound);
                         yield return new WaitForSeconds(_runSoundDelay + _runSound.length);
                     }
                     else
                     {
-                        audioController.PlaySfx(transform.position, _walkSound);
+                        _audioController.PlaySfx(transform.position, _walkSound);
                         yield return new WaitForSeconds(_walkSoundDelay + _walkSound.length);
                     }
 
