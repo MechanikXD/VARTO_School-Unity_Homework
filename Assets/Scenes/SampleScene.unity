@@ -3974,7 +3974,6 @@ GameObject:
   m_Component:
   - component: {fileID: 453590332}
   - component: {fileID: 453590331}
-  - component: {fileID: 453590333}
   m_Layer: 0
   m_Name: Firebase
   m_TagString: Untagged
@@ -4010,24 +4009,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 975404388}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &453590333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453590330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _components:
-  - {fileID: 453590331}
-  _identifier: 
-  _useSceneContext: 0
-  _context: {fileID: 0}
-  _bindType: 0
 --- !u!1 &460465463
 GameObject:
   m_ObjectHideFlags: 0
@@ -18282,7 +18263,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1645692136}
   - component: {fileID: 1645692135}
-  - component: {fileID: 1645692137}
   m_Layer: 0
   m_Name: AudioController
   m_TagString: Untagged
@@ -18324,24 +18304,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 975404388}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1645692137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645692134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _components:
-  - {fileID: 1645692135}
-  _identifier: 
-  _useSceneContext: 0
-  _context: {fileID: 0}
-  _bindType: 0
 --- !u!1 &1680349893
 GameObject:
   m_ObjectHideFlags: 0

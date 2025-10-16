@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 380611056441782464}
   - component: {fileID: 8404417699766482798}
   - component: {fileID: 3781241451178191933}
+  - component: {fileID: 5869690687464886983}
   m_Layer: 0
   m_Name: SM_Bullet_05
   m_TagString: Untagged
@@ -73,10 +74,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a5381368bc94eba85aac0504ff8bd92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletBody: {fileID: 0}
   _destroyOnCollision: 1
   _destroyDelay: 3
   _decalPrefab: {fileID: 3834064246299415417, guid: 7b0bfae37b196304a9078dcf48b3dd4a, type: 3}
+  _message: 
+--- !u!114 &5869690687464886983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989000923634411228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 0
 --- !u!1 &3585594593242577515
 GameObject:
   m_ObjectHideFlags: 0

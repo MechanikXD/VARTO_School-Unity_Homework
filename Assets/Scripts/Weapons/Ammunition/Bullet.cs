@@ -21,7 +21,6 @@ namespace Weapons.Ammunition
         {
             _message = message;
             _bulletBody = GetComponent<Rigidbody>();
-            if (gameObject.activeInHierarchy) gameObject.SetActive(false);
         }
 
         private void OnEnable()
@@ -29,7 +28,7 @@ namespace Weapons.Ammunition
             IEnumerator DisableAfter(float time)
             {
                 yield return new WaitForSeconds(time);
-                if (gameObject.activeInHierarchy) gameObject.SetActive(false);
+                Destroy(gameObject);
                 _activeCoroutine = null;
             }
 
@@ -46,7 +45,7 @@ namespace Weapons.Ammunition
             var decal = Instantiate(_decalPrefab, collisionPoint.point, decalRotation);
             decal.transform.SetParent(other.transform, true);
 
-            if (_destroyOnCollision) gameObject.SetActive(false);
+            if (_destroyOnCollision) Destroy(gameObject);
         }
 
         private void OnDisable()
